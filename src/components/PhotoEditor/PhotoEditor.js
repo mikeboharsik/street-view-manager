@@ -1,17 +1,26 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import GlobalState from '../GlobalState';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import fetcher, { ACTIONS } from '../../utilities/fetcher';
+import checkAccessToken from '../../utilities/checkAccessToken';
 
 import './PhotoEditor.css'
 
 export default function PhotoEditor({ match }) {
-	const { params: { photoId } } = match;
-	const { setState, uploads: { photos } } = useContext(GlobalState);
+	checkAccessToken();
+
 	const history = useHistory();
+
+	const { params: { photoId } } = match;
+	if (!photoId) {
+		history.push('/');
+	}
+
+	const { setState, uploads: { photos } } = useContext(GlobalState);
 	const coordinatesInput = useRef(null);
 	const altitudeInput = useRef(null);
 	const placesInput = useRef(null);
+	const connectionsInput = useRef(null);
 
 	const [curPhoto, setCurPhoto] = useState(null);
 
@@ -87,6 +96,37 @@ export default function PhotoEditor({ match }) {
 			placesInput.current.value = 'OK';
 		} catch(e) {
 			placesInput.current.value = `ERROR: ${e}`;
+		}
+	}
+
+	async function updateConnections() {
+		let { current: { value: newConnections } } = connectionsInput;
+
+		newConnections = newConnections.replace(' ', '')
+		if (newConnections === '') {
+			newConnections = [];
+		} else {
+			newConnections = newConnections.split(',').map((connection) => ({ target: { id: connection } }));
+		}
+
+		const updatedPhoto = JSON.parse(JSON.stringify(curPhoto));
+		updatedPhoto.connections = newConnections;
+
+		const options = { body: updatedPhoto, photoId, query: { updateMask: 'connections' } };
+
+		try {
+			await updatePhoto(options);
+
+			const newPhotos = [...photos];
+			const photoIdx = newPhotos.findIndex((p) => p.photoId.id === photoId);
+
+			newPhotos[photoIdx] = updatedPhoto;
+
+			setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: newPhotos } } ));
+
+			connectionsInput.current.value = 'OK';
+		} catch(e) {
+			connectionsInput.current.value = `ERROR: ${e}`;
 		}
 	}
 
@@ -173,7 +213,9 @@ export default function PhotoEditor({ match }) {
 					<br />
 
 					<span>
-						Connections: {connections?.map((c) => <a key={c.target.id} href={`/photoEditor/${c.target.id}`}>{c.target.id}</a>) || 'None'}
+						Connections: {connections?.map(
+							(c) => <><Link key={c.target.id} to={`/photoEditor/${c.target.id}`}>{`${c.target.id.slice(0, 5)}...${c.target.id.slice(59, 64)}`}</Link><span>&nbsp;&nbsp;</span></>) || 'None'
+						}
 					</span>
 					<br />
 					<br />
@@ -191,6 +233,11 @@ export default function PhotoEditor({ match }) {
 					<div>
 						<input type="text" ref={placesInput} placeholder="Update places here" />
 						<button type="submit" onClick={updatePlaces}>Submit</button>
+					</div>
+
+					<div>
+						<input type="text" ref={connectionsInput} placeholder="Update connections here" />
+						<button type="submit" onClick={updateConnections}>Submit</button>
 					</div>
 
 					<span style={{ cursor: 'pointer', fontSize: 42, fontWeight: 'bold' }} onClick={() => { history.push('/'); }}>

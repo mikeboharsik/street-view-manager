@@ -47,6 +47,11 @@
 	position: absolute;
 }
 
+.thumbnail-overlay-connections {
+	padding-left: 0.5em;
+	padding-top: 0.25em;
+}
+
 .thumbnail-overlay-capturetime {
 	padding-right: 0.5em;
 	right: 0;

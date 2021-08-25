@@ -1,15 +1,16 @@
 import { useContext, useEffect, useState } from 'react';
 import GlobalState from '../GlobalState';
 import fetcher, { ACTIONS } from '../../utilities/fetcher';
-import { getCookie } from '../../hooks/useCookies';
-import { default as EyeIcon } from '../icons/Eye';
+import { Chain as ChainIcon, Eye as EyeIcon } from '../icons';
+
+import checkAccessToken from '../../utilities/checkAccessToken';
 
 import { Link } from 'react-router-dom';
 
 import './Landing.css';
 
 function ThumbnailOverlay({ photo }) {
-	const { captureTime, places, viewCount } = photo;
+	const { captureTime, connections, places, viewCount } = photo;
 
 	if (viewCount === undefined) {
 		return null;
@@ -20,11 +21,16 @@ function ThumbnailOverlay({ photo }) {
 
 	return (
 		<div className="thumbnail-overlay-container">
+			<div className="thumbnail-overlay-item thumbnail-overlay-connections">
+				<ChainIcon style={{ filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)', height: 16, width: 16 }} />
+				&nbsp;
+				{connections?.length ?? 0}
+			</div>
 			<div className="thumbnail-overlay-item thumbnail-overlay-capturetime">
 				{captureTimeDate}
 			</div>
 			<div className="thumbnail-overlay-item thumbnail-overlay-viewcount">
-				<EyeIcon style={{ filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)',height: 16, width: 16 }} />
+				<EyeIcon style={{ filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)', height: 16, width: 16 }} />
 				&nbsp;
 				{viewCount}
 			</div>
@@ -139,11 +145,12 @@ function PhotosNav() {
 }
 
 export default function Config() {
-	const access_token = getCookie('access_token');
+	checkAccessToken();
+
 	const { fetcher: { photos: { inProgress } }, setState, uploads: { photos } } = useContext(GlobalState);
 
 	useEffect(() => {
-		if (access_token && inProgress === null) {
+		if (inProgress === null) {
 			async function getPhotos() {
 				try {
 					setState((prev) => ({ ...prev, fetcher: { photos: { inProgress: true } }, showLoader: true }));
@@ -171,9 +178,9 @@ export default function Config() {
 
 			return;
 		}
-	}, [access_token, inProgress, photos, setState]);
+	}, [inProgress, photos, setState]);
 
-	if (!access_token || inProgress) {
+	if (inProgress) {
 		return null;
 	}
 
