@@ -10,4 +10,4 @@ This project aims to overcome these issues by providing a browser-based applicat
 
 # Usage
 
-This is a React application built on top of `create-react-app`. As such, you generally will run `yarn start` to test local changes and `yarn build` to build whatever you are going to host somewhere. My assumption is that if you are reading this then you know about these things already.
+This is a React application built on top of `create-react-app`. As such, you generally will run `yarn start` to test local changes and `yarn build` to build the client files to host on a server. My assumption is that if you are reading this then you know about these things already.
