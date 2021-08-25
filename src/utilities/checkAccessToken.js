@@ -1,6 +1,8 @@
 import { getCookie } from "../hooks/useCookies";
 
-export default function checkAccessToken() {
+export default function checkAccessToken(setState) {
+  setState?.((prev) => ({ ...prev, showLoader: true }));
+
 	const access_token = getCookie('access_token');
   if (!access_token) {
     const baseUri = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -24,6 +26,8 @@ export default function checkAccessToken() {
 
     return null;
   }
+
+  setState?.((prev) => ({ ...prev, showLoader: false }));
 
   return access_token;
 };
