@@ -1,0 +1,89 @@
+#thumbnails-container {
+	align-content: center;
+	column-gap: 2em;
+	justify-content: center;
+	display: grid;
+	grid-template-columns: 25% 25% 25%;
+	grid-template-rows: 25% 25% 25%;
+	position: relative;
+	row-gap: 3em;
+}
+
+.thumbnail-container {
+	align-self: center;
+	box-shadow: 0px 0px 8px black;
+	justify-self: center;
+	height: fit-content;
+	position: relative;
+}
+
+.invisible {
+	cursor: default;
+	opacity: 0;
+	user-select: none;
+	pointer-events: none;
+}
+
+.thumbnail-container > a {
+	display: flex;
+}
+
+.thumbnail-overlay-container {
+	color: white;
+	height: 100%;
+	left: 0;
+	pointer-events: none;
+	position: absolute;
+	text-shadow: 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black;
+	top: 0;
+	user-select: none;
+	width: 100%;
+}
+
+.thumbnail-overlay-item {
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	position: absolute;
+}
+
+.thumbnail-overlay-capturetime {
+	padding-right: 0.5em;
+	right: 0;
+	top: 0;
+}
+
+.thumbnail-overlay-viewcount {
+	bottom: 0;
+	padding-left: 0.5em;
+}
+
+.thumbnail-overlay-placenames {
+	bottom: 0;
+	max-width: 70%;
+	overflow: hidden;
+	padding-right: 0.5em;
+	pointer-events: auto;
+	right: 0;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.thumbnail-image:hover {
+	filter: brightness(0.8);
+	transition: 0.3s;
+}
+
+.thumbnail-image {
+	position: relative;
+	transition: 0.3s;
+	width: 100%;
+}
+
+#photos-nav-container {
+	display: flex;
+	flex-direction: row;
+	font-weight: bold;
+	justify-content: center;
+	user-select: none;
+}
