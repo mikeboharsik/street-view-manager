@@ -180,7 +180,7 @@ export default function Config() {
 		}
 	}, [inProgress, photos, setState]);
 
-	if (inProgress) {
+	if (!photos) {
 		return null;
 	}
 

@@ -13,7 +13,7 @@ export const initialState = {
 	showLoader: false,
 	uploads: {
 		currentPage: 0,
-		photos: [],
+		photos: null,
 		photosPerPage: 9,
 	},
 };
