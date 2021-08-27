@@ -10,13 +10,15 @@ import { Link } from 'react-router-dom';
 import './Landing.css';
 
 function ThumbnailOverlay({ photo }) {
-	const { captureTime, connections, places, viewCount } = photo;
+	const { uploads: { places } } = useContext(GlobalState);
+
+	const { captureTime, connections, places: photoPlaces, viewCount } = photo;
 
 	if (viewCount === undefined) {
 		return null;
 	}
 
-	const placeNames = places?.map(p => p?.name || p?.placeId).join(', ') ?? 'No places';
+	const placeNames = photoPlaces?.map(p => places[p?.placeId]?.name || p?.name || p?.placeId).join(', ') ?? 'No places';
 	const captureTimeDate = new Date(captureTime).toLocaleString();
 
 	return (
@@ -164,11 +166,26 @@ export default function Config() {
 
 						allPhotos.push(...res.photos);
 					} while(pageToken);
-
 					allPhotos.sort((a, b) => a.captureTime > b.captureTime ? -1 : a.captureTime < b.captureTime ? 1 : 0);
 
-					setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: allPhotos } }));
-				} catch {
+					const allPlaces = allPhotos.reduce((acc, cur) => {
+						const { places } = cur;
+
+						places?.forEach((place) => {
+							const { placeId } = place;
+
+							if (!acc[placeId]) {
+								acc[placeId] = place;
+							}
+						});
+
+						return acc;
+					}, {});
+
+					setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: allPhotos, places: allPlaces } }));
+				} catch(e) {
+					console.error(e);
+
 					setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: [] } }));
 				} finally {
 					setState((prev) => ({ ...prev, fetcher: { ...prev.fetcher, photos: { inProgress: false } }, showLoader: false }));

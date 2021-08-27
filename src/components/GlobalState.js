@@ -14,6 +14,7 @@ export const initialState = {
 		currentPage: 0,
 		photos: null,
 		photosPerPage: 9,
+		places: {},
 	},
 };
 

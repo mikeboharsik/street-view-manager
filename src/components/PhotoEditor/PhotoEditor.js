@@ -16,7 +16,7 @@ export default function PhotoEditor({ match }) {
 		history.push('/');
 	}
 
-	const { setState, uploads: { photos } } = useContext(GlobalState);
+	const { setState, uploads: { photos, places } } = useContext(GlobalState);
 	const coordinatesInput = useRef(null);
 	const altitudeInput = useRef(null);
 	const placesInput = useRef(null);
@@ -149,7 +149,7 @@ export default function PhotoEditor({ match }) {
 	if (curPhoto) {
 		const {
 			connections,
-			places,
+			places: photoPlaces,
 			pose: { altitude, latLngPair: { latitude, longitude } },
 			shareLink,
 			thumbnailUrl,
@@ -188,7 +188,7 @@ export default function PhotoEditor({ match }) {
 
 					<span>
 						Places: {
-							(places?.length && places.map((p) =>
+							(photoPlaces?.length && photoPlaces.map((p) =>
 								<span
 									style={{ cursor: 'pointer' }}
 									key={p.placeId}
@@ -200,7 +200,7 @@ export default function PhotoEditor({ match }) {
 										document.execCommand('copy');
 										document.querySelector('#copy').value = null;
 								}}>
-									{p.name || p.placeId}
+									{places[p.placeId]?.name || p.name || p.placeId}
 									&nbsp;&nbsp;
 								</span>
 							)) || 'None '
