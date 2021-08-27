@@ -1,7 +1,6 @@
 import React from 'react';
 
 export const initialState = {
-	checkingAccessToken: null,
 	fetcher: {
 		photo: {
 			inProgress: null,

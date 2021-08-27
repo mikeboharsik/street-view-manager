@@ -153,7 +153,7 @@ export default function Config() {
 		if (inProgress === null) {
 			async function getPhotos() {
 				try {
-					setState((prev) => ({ ...prev, fetcher: { photos: { inProgress: true } }, showLoader: true }));
+					setState((prev) => ({ ...prev, fetcher: { ...prev.fetcher, photos: { inProgress: true } }, showLoader: true }));
 
 					let pageToken = null;
 					const allPhotos = [];
@@ -171,7 +171,7 @@ export default function Config() {
 				} catch {
 					setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: [] } }));
 				} finally {
-					setState((prev) => ({ ...prev, fetcher: { photos: { inProgress: false } }, showLoader: false }));
+					setState((prev) => ({ ...prev, fetcher: { ...prev.fetcher, photos: { inProgress: false } }, showLoader: false }));
 				}
 			}
 			getPhotos();
