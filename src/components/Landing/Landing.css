@@ -41,9 +41,6 @@
 }
 
 .thumbnail-overlay-item {
-	align-items: center;
-	display: flex;
-	flex-direction: row;
 	position: absolute;
 }
 
