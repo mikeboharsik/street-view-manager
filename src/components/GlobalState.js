@@ -12,6 +12,10 @@ export const initialState = {
 	showLoader: false,
 	uploads: {
 		currentPage: 0,
+		multiselect: {
+			isEnabled: false,
+			ids: [],
+		},
 		photos: null,
 		photosPerPage: 9,
 		places: {},

@@ -41,6 +41,7 @@
 }
 
 .thumbnail-overlay-item {
+	pointer-events: visible;
 	position: absolute;
 }
 
