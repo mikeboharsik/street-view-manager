@@ -1,10 +1,8 @@
 import { getCookie } from "../hooks/useCookies";
 
-export default function checkAccessToken(setState) {
-  setState?.((prev) => ({ ...prev, showLoader: true }));
-
+export default function checkAccessToken() {
 	const access_token = getCookie('access_token');
-  if (!access_token) {
+  if (!access_token && window.location.pathname !== '/oauth') {
     const baseUri = 'https://accounts.google.com/o/oauth2/v2/auth';
 
     const clientId = process.env.NODE_ENV === 'production' ? '927910378932-7gbkkgr02ptrvl577flg6k38a90pq2nr.apps.googleusercontent.com' : '927910378932-v9avf10ud1a4hmmk123iihrvckv90ie1.apps.googleusercontent.com';
@@ -24,10 +22,8 @@ export default function checkAccessToken(setState) {
 
     window.location.href = url;
 
-    return null;
+    return false;
   }
 
-  setState?.((prev) => ({ ...prev, showLoader: false }));
-
-  return access_token;
+  return true;
 };

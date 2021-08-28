@@ -3,8 +3,6 @@ import GlobalState from '../GlobalState';
 import fetcher, { ACTIONS } from '../../utilities/fetcher';
 import { Chain as ChainIcon, Eye as EyeIcon } from '../icons';
 
-import checkAccessToken from '../../utilities/checkAccessToken';
-
 import { Link } from 'react-router-dom';
 
 import './Landing.css';
@@ -70,6 +68,7 @@ function Thumbnails({ photos }) {
 	}, [currentPage, photos, photosPerPage]);
 
 	if (photos.length <= 0 && inProgress === false) {
+		console.log({ photos, inProgress });
 		return (
 			<div>
 				No photos. Go ahead and upload some.
@@ -147,12 +146,10 @@ function PhotosNav() {
 }
 
 export default function Config() {
-	checkAccessToken();
-
-	const { fetcher: { photos: { inProgress } }, setState, uploads: { photos } } = useContext(GlobalState);
+	const { fetcher: { photos: { inProgress } }, isAuthed, setState, uploads: { photos } } = useContext(GlobalState);
 
 	useEffect(() => {
-		if (inProgress === null) {
+		if (isAuthed && inProgress === null) {
 			async function getPhotos() {
 				try {
 					setState((prev) => ({ ...prev, fetcher: { ...prev.fetcher, photos: { inProgress: true } }, showLoader: true }));
@@ -195,9 +192,9 @@ export default function Config() {
 
 			return;
 		}
-	}, [inProgress, photos, setState]);
+	}, [inProgress, isAuthed, photos, setState]);
 
-	if (!photos || inProgress) {
+	if (!isAuthed || !photos || inProgress) {
 		return null;
 	}
 

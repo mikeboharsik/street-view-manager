@@ -2,13 +2,10 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import GlobalState from '../GlobalState';
 import { Link, useHistory } from 'react-router-dom';
 import fetcher, { ACTIONS } from '../../utilities/fetcher';
-import checkAccessToken from '../../utilities/checkAccessToken';
 
 import './PhotoEditor.css'
 
 export default function PhotoEditor({ match }) {
-	checkAccessToken();
-
 	const history = useHistory();
 
 	const { params: { photoId } } = match;

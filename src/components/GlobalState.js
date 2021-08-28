@@ -9,6 +9,7 @@ export const initialState = {
 			inProgress: null,
 		},
 	},
+	isAuthed: false,
 	showLoader: false,
 	uploads: {
 		currentPage: 0,

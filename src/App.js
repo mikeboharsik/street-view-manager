@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import PulseLoader from 'react-spinners/PulseLoader';
 
 import GlobalState, { initialState } from './components/GlobalState';
+import checkAccessToken from './utilities/checkAccessToken';
 
 import { Landing, OAuth, PhotoEditor } from './components';
 
@@ -24,6 +25,15 @@ function LoaderContainer() {
 
 function App() {
   const [state, setState] = useState(initialState);
+
+  const haveAccessToken = checkAccessToken();
+  if (!haveAccessToken) {
+    return null;
+  } else {
+    if (!state.isAuthed) {
+      setState((prev) => ({ ...prev, isAuthed: true }));
+    }
+  }
 
   return (
     <div className="App">
