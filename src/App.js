@@ -5,11 +5,11 @@ import PulseLoader from 'react-spinners/PulseLoader';
 import GlobalState, { initialState } from './components/GlobalState';
 import checkAccessToken from './utilities/checkAccessToken';
 
-import { Landing, OAuth, PhotoEditor } from './components';
+import { Landing, OAuth, PhotoEditor, PhotoUploader } from './components';
 
 import './App.css';
 
-function LoaderContainer() {
+function Loader() {
   const { showLoader } = useContext(GlobalState);
 
   if (showLoader) {
@@ -29,19 +29,18 @@ function App() {
   const haveAccessToken = checkAccessToken();
   if (!haveAccessToken) {
     return null;
-  } else {
-    if (!state.isAuthed) {
-      setState((prev) => ({ ...prev, isAuthed: true }));
-    }
+  } else if (!state.isAuthed) {
+    setState((prev) => ({ ...prev, isAuthed: true }));
   }
 
   return (
     <div className="App">
       <GlobalState.Provider value={{ setState, ...state }}>
-        <LoaderContainer />
+        <Loader />
         <Router>
           <Switch>
             <Route path="/photoEditor/:photoId" component={PhotoEditor} exact />
+            <Route path="/photoUploader" component={PhotoUploader} exact />
             <Route path="/oauth" component={OAuth} exact />
             <Route path="/" component={Landing} />
           </Switch>

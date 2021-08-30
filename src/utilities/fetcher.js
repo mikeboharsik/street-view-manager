@@ -3,12 +3,17 @@ import { getCookie } from '../hooks/useCookies';
 const BASE_URL = 'https://streetviewpublish.googleapis.com';
 
 export const ACTIONS = {
+	CREATE_PHOTO: 'CREATE_PHOTO',
+	CREATE_UPLOAD_SESSION: 'CREATE_UPLOAD_SESSION',
 	GET_PHOTO: 'GET_PHOTO',
 	GET_PHOTOS: 'GET_PHOTOS',
 	UPDATE_PHOTO: 'UPDATE_PHOTO',
+	UPLOAD_PHOTO: 'UPLOAD_PHOTO',
 };
 
 const URIS = {
+	[ACTIONS.CREATE_PHOTO]: `${BASE_URL}/v1/photo`,
+	[ACTIONS.CREATE_UPLOAD_SESSION]: `${BASE_URL}/v1/photo:startUpload`,
 	[ACTIONS.GET_PHOTO]: `${BASE_URL}/v1/photo/{photoId}`,
 	[ACTIONS.GET_PHOTOS]: `${BASE_URL}/v1/photos`,
 	[ACTIONS.UPDATE_PHOTO]: `${BASE_URL}/v1/photo/{photoId}`,
@@ -31,6 +36,12 @@ export default function fetcher(action, args) {
 	let uri = URIS[action];
 
 	switch(action) {
+		case ACTIONS.CREATE_PHOTO:
+		case ACTIONS.CREATE_UPLOAD_SESSION: {
+			options.method = 'POST';
+
+			break;
+		}
 		case ACTIONS.GET_PHOTO: {
 			const { photoId } = args;
 
@@ -67,6 +78,17 @@ export default function fetcher(action, args) {
 
 			options.body = typeof body == 'string' ? body : JSON.stringify(body);
 			options.method = 'PUT';
+			break;
+		}
+		case ACTIONS.UPLOAD_PHOTO: {
+			const { body, uploadUrl } = args;
+
+			uri = uploadUrl;
+
+			options.body = body;
+			options.method = 'POST';
+			options.headers = { ...options.headers, 'content-type': 'image/jpeg' };
+
 			break;
 		}
 		default:

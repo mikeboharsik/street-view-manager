@@ -7,54 +7,54 @@ import { Link } from 'react-router-dom';
 
 import './Landing.css';
 
-function ThumbnailOverlay({ photo }) {
-	const { uploads: { places } } = useContext(GlobalState);
-
-	const { captureTime, connections, places: photoPlaces, viewCount } = photo;
-
-	if (viewCount === undefined) {
-		return null;
+function Thumbnails({ photos }) {
+	function ThumbnailOverlay({ photo }) {
+		const { uploads: { places } } = useContext(GlobalState);
+	
+		const { captureTime, connections, places: photoPlaces, viewCount } = photo;
+	
+		if (viewCount === undefined) {
+			return null;
+		}
+	
+		const placeNames = photoPlaces?.map(p => places[p?.placeId]?.name || p?.name || p?.placeId).join(', ') ?? 'No places';
+		const captureTimeDate = new Date(captureTime).toLocaleString();
+	
+		return (
+			<div className="thumbnail-overlay-container">
+				<div className="thumbnail-overlay-item thumbnail-overlay-connections" title="Connections">
+					<ChainIcon style={{ filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)', height: 16, width: 16 }} />
+					&nbsp;
+					{connections?.length ?? 0}
+				</div>
+				<div className="thumbnail-overlay-item thumbnail-overlay-capturetime" title="Capture Time">
+					{captureTimeDate}
+				</div>
+				<div className="thumbnail-overlay-item thumbnail-overlay-viewcount" title="Views">
+					<EyeIcon style={{ filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)', height: 16, width: 16 }} />
+					&nbsp;
+					{viewCount}
+				</div>
+				<div className="thumbnail-overlay-item thumbnail-overlay-placenames" title={placeNames}>
+					{placeNames}
+				</div>
+			</div>
+		);
 	}
 
-	const placeNames = photoPlaces?.map(p => places[p?.placeId]?.name || p?.name || p?.placeId).join(', ') ?? 'No places';
-	const captureTimeDate = new Date(captureTime).toLocaleString();
-
-	return (
-		<div className="thumbnail-overlay-container">
-			<div className="thumbnail-overlay-item thumbnail-overlay-connections" title="Connections">
-				<ChainIcon style={{ filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)', height: 16, width: 16 }} />
-				&nbsp;
-				{connections?.length ?? 0}
+	function Thumbnail({ hide, photo }) {
+		const { photoId: { id: photoId }, thumbnailUrl: url } = photo;
+	
+		return (
+			<div className={`thumbnail-container${hide ? ' invisible' : ''}`}>
+				<Link to={`/photoEditor/${photoId}`}>
+					<img className="thumbnail-image" alt="" src={url} />
+				</Link>
+				<ThumbnailOverlay photo={photo} />
 			</div>
-			<div className="thumbnail-overlay-item thumbnail-overlay-capturetime" title="Capture Time">
-				{captureTimeDate}
-			</div>
-			<div className="thumbnail-overlay-item thumbnail-overlay-viewcount" title="Views">
-				<EyeIcon style={{ filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)', height: 16, width: 16 }} />
-				&nbsp;
-				{viewCount}
-			</div>
-			<div className="thumbnail-overlay-item thumbnail-overlay-placenames" title={placeNames}>
-				{placeNames}
-			</div>
-		</div>
-	);
-}
+		);
+	}
 
-function Thumbnail({ hide, photo }) {
-	const { photoId: { id: photoId }, thumbnailUrl: url } = photo;
-
-	return (
-		<div className={`thumbnail-container${hide ? ' invisible' : ''}`}>
-			<Link to={`/photoEditor/${photoId}`}>
-				<img className="thumbnail-image" alt="" src={url} />
-			</Link>
-			<ThumbnailOverlay photo={photo} />
-		</div>
-	);
-}
-
-function Thumbnails({ photos }) {
 	const { fetcher: { photos: { inProgress } }, uploads: { currentPage, photosPerPage } } = useContext(GlobalState);
 
 	const [renderedPhotos, setRenderedPhotos] = useState(null);
@@ -68,7 +68,6 @@ function Thumbnails({ photos }) {
 	}, [currentPage, photos, photosPerPage]);
 
 	if (photos.length <= 0 && inProgress === false) {
-		console.log({ photos, inProgress });
 		return (
 			<div>
 				No photos. Go ahead and upload some.
@@ -108,7 +107,7 @@ function PhotosNav() {
 
 	const currentPageNav = currentPage + 1 < 10 ? `0${currentPage + 1}` : currentPage + 1;
 	const pageCountNav = pageCount < 10 ? `0${pageCount}` : pageCount;
-	const pageIndicator = `${currentPageNav} / ${pageCountNav}`;
+	const pageIndicator = <span title={`${photos.length} total photos`}>{`${currentPageNav} / ${pageCountNav}`}</span>;
 
 	return (
 		<div id="photos-nav-container">
@@ -201,7 +200,13 @@ export default function Config() {
 	return (
 		<>
 			<div className="header">
-				Photos
+				<span>
+					Photos
+					<span style={{ fontWeight: 'bold', position: 'absolute' }}>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<Link style={{ textDecoration: 'none' }} to="/photoUploader">+</Link>
+					</span>
+				</span>
 			</div>
 
 			<Thumbnails photos={photos} />

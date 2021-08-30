@@ -5,8 +5,6 @@ import GlobalState from './GlobalState';
 import useCookies, { setCookie } from '../hooks/useCookies';
 
 export default function OAuth() {
-	console.log('test');
-
 	const { isAuthed, setState } = useContext(GlobalState);
 
 	const { access_token } = useCookies();
