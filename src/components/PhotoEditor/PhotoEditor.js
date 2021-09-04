@@ -170,7 +170,7 @@ export default function PhotoEditor({ match }) {
 		const {
 			connections,
 			places: photoPlaces,
-			pose: { altitude, latLngPair: { latitude, longitude } },
+			pose: { altitude, latLngPair: { latitude, longitude }, level },
 			shareLink,
 			thumbnailUrl,
 			viewCount,
@@ -202,6 +202,11 @@ export default function PhotoEditor({ match }) {
 					<br />
 
 					<span>
+						Level: {level ? `${level.name} (${level.number})` : 'None'}
+					</span>
+					<br />
+
+					<span>
 						Altitude: {`${typeof altitude === 'number' ? altitude?.toFixed(3) : '?'} m`}
 					</span>
 					<br />
@@ -213,11 +218,12 @@ export default function PhotoEditor({ match }) {
 									style={{ cursor: 'pointer' }}
 									key={p.placeId}
 									placeid={p.placeId}
-									onClick={(evt) => {
+									onClick={async (evt) => {
 										const placeId = evt.target.getAttribute('placeid');
-										navigator.clipboard.writeText(placeId);
+										await navigator.clipboard.writeText(placeId);
 										toast('Copied Place ID!', { autoClose: 2500, type: 'success' });
-								}}>
+									}}
+								>
 									{places[p.placeId]?.name || p.name || p.placeId}
 									&nbsp;&nbsp;
 								</span>
@@ -247,13 +253,13 @@ export default function PhotoEditor({ match }) {
 					</div>
 
 					<div>
-						<input type="text" ref={placesInput} placeholder="Update places here" />
-						<button type="submit" onClick={updatePlaces}>Submit</button>
+						<input type="text" ref={connectionsInput} placeholder="Update connections here" />
+						<button type="submit" onClick={updateConnections}>Submit</button>
 					</div>
 
 					<div>
-						<input type="text" ref={connectionsInput} placeholder="Update connections here" />
-						<button type="submit" onClick={updateConnections}>Submit</button>
+						<input type="text" ref={placesInput} placeholder="Update places here" />
+						<button type="submit" onClick={updatePlaces}>Submit</button>
 					</div>
 
 					<span style={{ cursor: 'pointer', fontSize: 42, fontWeight: 'bold' }} onClick={() => { history.push('/'); }}>
