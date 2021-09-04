@@ -14,8 +14,8 @@ export const initialState = {
 	uploads: {
 		currentPage: 0,
 		multiselect: {
-			isEnabled: false,
 			ids: [],
+			isEnabled: false,
 		},
 		photos: null,
 		photosPerPage: 9,

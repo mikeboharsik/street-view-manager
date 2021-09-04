@@ -1,0 +1,32 @@
+#utilityBar-container {
+	align-items: center;
+	color: black;
+	cursor: default;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-height: 64px;
+	min-width: 64px;
+	padding: 4px 0px 4px 0px;
+	position: absolute;
+	right: 0;
+	user-select: none;
+	z-index: 1000;
+}
+
+.utilityBar-container-active {
+	background-color: lightgray;
+}
+
+.utilityBar-container-inactive {
+	background-color: gray;
+}
+
+.utilityBar-function-active {
+	cursor: pointer;
+	pointer-events: all;
+}
+
+.utilityBar-function-inactive {
+	pointer-events: none;
+}

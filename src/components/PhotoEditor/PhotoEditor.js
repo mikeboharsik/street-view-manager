@@ -1,9 +1,32 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import GlobalState from '../GlobalState';
 import { Link, useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import GlobalState from '../GlobalState';
 import fetcher, { ACTIONS } from '../../utilities/fetcher';
 
 import './PhotoEditor.css'
+
+function Connection({ data }) {
+	return (
+		<span key={data.target.id}>
+			<Link to={`/photoEditor/${data.target.id}`}>
+				{`${data.target.id.slice(0, 3)}...${data.target.id.slice(61, 64)}`}
+			</Link>
+			<span>
+				&nbsp;&nbsp;
+			</span>
+		</span>
+	);
+}
+
+function Connections({ connections }) {
+	return (
+		<span>
+			Connections: {connections?.map((c) => <Connection data={c} key={c.target.id} />) || 'None'}
+		</span>
+	);
+}
 
 export default function PhotoEditor({ match }) {
 	const history = useHistory();
@@ -192,10 +215,8 @@ export default function PhotoEditor({ match }) {
 									placeid={p.placeId}
 									onClick={(evt) => {
 										const placeId = evt.target.getAttribute('placeid');
-										document.querySelector('#copy').value = placeId;
-										document.querySelector('#copy').select();
-										document.execCommand('copy');
-										document.querySelector('#copy').value = null;
+										navigator.clipboard.writeText(placeId);
+										toast('Copied Place ID!', { autoClose: 2500, type: 'success' });
 								}}>
 									{places[p.placeId]?.name || p.name || p.placeId}
 									&nbsp;&nbsp;
@@ -210,9 +231,7 @@ export default function PhotoEditor({ match }) {
 					<br />
 
 					<span>
-						Connections: {connections?.map(
-							(c) => <><Link key={c.target.id} to={`/photoEditor/${c.target.id}`}>{`${c.target.id.slice(0, 5)}...${c.target.id.slice(59, 64)}`}</Link><span>&nbsp;&nbsp;</span></>) || 'None'
-						}
+						<Connections connections={connections} />
 					</span>
 					<br />
 					<br />

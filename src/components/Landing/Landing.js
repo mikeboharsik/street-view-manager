@@ -43,13 +43,53 @@ function Thumbnails({ photos }) {
 	}
 
 	function Thumbnail({ hide, photo }) {
+		const { uploads: { multiselect: { ids, isEnabled } }, setState } = useContext(GlobalState);
+
 		const { photoId: { id: photoId }, thumbnailUrl: url } = photo;
 	
-		return (
-			<div className={`thumbnail-container${hide ? ' invisible' : ''}`}>
+		const photoIsSelected = ids.includes(photoId);
+
+		const baseFilter = 'drop-shadow(0px 0px 1px white)';
+		const filters = Array(3).fill(baseFilter).join(' ');
+
+		let image = null;
+		if (isEnabled) {
+			const style = photoIsSelected ? { filter: filters } : {};
+			image = (
+				<div style={{ display: 'flex' }} onClick={() => setState((prev) => {
+					let newIds = prev.uploads.multiselect.ids;
+					const curIndex = newIds.indexOf(photoId);
+					if (curIndex === -1) {
+						newIds = [...newIds, photoId];
+					} else {
+						newIds = newIds.filter((id) => id !== photoId);
+					}
+
+					return {
+						...prev,
+						uploads: {
+							...prev.uploads,
+							multiselect: {
+								...prev.uploads.multiselect,
+								ids: newIds,
+							},
+						},
+					};
+				})}>
+					<img className="thumbnail-image" style={{ ...style, cursor: 'cell' }} alt="" src={url} />
+				</div>
+			);
+		} else {
+			image = (
 				<Link to={`/photoEditor/${photoId}`}>
 					<img className="thumbnail-image" alt="" src={url} />
 				</Link>
+			);
+		}
+
+		return (
+			<div className={`thumbnail-container${hide ? ' invisible' : ''}`}>
+				{image}
 				<ThumbnailOverlay photo={photo} />
 			</div>
 		);
@@ -93,6 +133,43 @@ function Thumbnails({ photos }) {
 }
 
 function PhotosNav() {
+	function NavButton({ char, isHidden, setStateHandler }) {
+		const cursor = isHidden ? 'default' : 'pointer';
+		const opacity = isHidden ? 0 : 1;
+
+		return (
+			<span
+				onClick={() => { if (isHidden) return; setState(setStateHandler); }}
+				style={{ cursor, paddingLeft: '4px', paddingRight: '4px', opacity }}
+			>
+				{char}
+			</span>
+		);
+	}
+
+	function PageIndicator({ currentPageNav, pageCountNav, photos }) {
+		return (
+			<span style={{ padding: '0px 4px 0px 4px' }} title={`${photos.length} total photos`}>
+				{`${currentPageNav} / ${pageCountNav}`}
+			</span>
+		);
+	};
+
+	function getPaddedCurrentPage(rawCurPage, pageCount) {
+		const curPage = rawCurPage + 1;
+
+		let curPageLog = Math.log10(curPage);
+		if (curPageLog % 1 === 0) curPageLog += 1;
+
+		const lCur = Math.ceil(curPageLog);
+    const cMax = Math.ceil(Math.log10(pageCount));
+
+		const n = lCur > cMax ? 0 : cMax - lCur;
+    const zeroes = new Array(n).fill(0).join('');
+
+    return `${zeroes}${curPage}`;
+	}
+
 	const { fetcher: { photos: { inProgress } }, setState, uploads: { currentPage, photos, photosPerPage } } = useContext(GlobalState);
 
 	if (inProgress || photos.length <= 0) {
@@ -105,41 +182,15 @@ function PhotosNav() {
 	const hideRight = currentPage + 1 === pageCount;
 	const hideRightRight = hideRight || currentPage + 1 === pageCount - 1;
 
-	const currentPageNav = currentPage + 1 < 10 ? `0${currentPage + 1}` : currentPage + 1;
-	const pageCountNav = pageCount < 10 ? `0${pageCount}` : pageCount;
-	const pageIndicator = <span title={`${photos.length} total photos`}>{`${currentPageNav} / ${pageCountNav}`}</span>;
+	const currentPageNav = getPaddedCurrentPage(currentPage, pageCount);
 
 	return (
 		<div id="photos-nav-container">
-			<span
-				style={{ cursor: hideLeftLeft ? 'default' : 'pointer', opacity: hideLeftLeft ? 0 : 1 }}
-				onClick={() => { if (hideLeftLeft) return; setState((prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: 0 }})); }}
-			>
-				{'<<'}
-			</span>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<span
-				style={{ cursor: hideLeft ? 'default' : 'pointer', opacity: hideLeft ? 0 : 1 }}
-				onClick={() => { if (hideLeft) return; setState((prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: currentPage - 1 }})); }}
-			>
-				{'<'}
-			</span>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<span>{pageIndicator}</span>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<span
-				style={{ cursor: hideRight ? 'default' : 'pointer', opacity: hideRight ? 0 : 1 }}
-				onClick={() => { if (hideRight) return; setState((prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: currentPage + 1 }})); }}
-			>
-				{'>'}
-			</span>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<span
-				style={{ cursor: hideRightRight ? 'default' : 'pointer', opacity: hideRightRight ? 0 : 1 }}
-				onClick={() => { if (hideRightRight) return; setState((prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: pageCount - 1 }})); }}
-			>
-				{'>>'}
-			</span>
+			<NavButton char={'<<'} isHidden={hideLeftLeft} setStateHandler={(prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: 0 }})} />
+			<NavButton char={'<'} isHidden={hideLeft} setStateHandler={(prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: currentPage - 1 }})} />
+			<PageIndicator currentPageNav={currentPageNav} pageCountNav={pageCount} photos={photos} />
+			<NavButton char={'>'} isHidden={hideRight} setStateHandler={(prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: currentPage + 1 }})} />
+			<NavButton char={'>>'} isHidden={hideRightRight} setStateHandler={(prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: pageCount - 1 }})} />
 		</div>
 	);
 }

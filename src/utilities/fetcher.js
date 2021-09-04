@@ -8,6 +8,7 @@ export const ACTIONS = {
 	GET_PHOTO: 'GET_PHOTO',
 	GET_PHOTOS: 'GET_PHOTOS',
 	UPDATE_PHOTO: 'UPDATE_PHOTO',
+	UPDATE_PHOTOS: 'UPDATE_PHOTOS',
 	UPLOAD_PHOTO: 'UPLOAD_PHOTO',
 };
 
@@ -17,6 +18,7 @@ const URIS = {
 	[ACTIONS.GET_PHOTO]: `${BASE_URL}/v1/photo/{photoId}`,
 	[ACTIONS.GET_PHOTOS]: `${BASE_URL}/v1/photos`,
 	[ACTIONS.UPDATE_PHOTO]: `${BASE_URL}/v1/photo/{photoId}`,
+	[ACTIONS.UPDATE_PHOTOS]: `${BASE_URL}/v1/photos:batchUpdate`,
 }
 
 export default function fetcher(action, args) {
@@ -56,7 +58,7 @@ export default function fetcher(action, args) {
 		case ACTIONS.GET_PHOTOS: {
 			const { pageToken } = args;
 
-			uri += '?view=INCLUDE_DOWNLOAD_URL&pageSize=16';
+			uri += '?view=INCLUDE_DOWNLOAD_URL&pageSize=100';
 
 			if (pageToken) {
 				uri += `&pageToken=${pageToken}`;
@@ -78,6 +80,17 @@ export default function fetcher(action, args) {
 
 			options.body = typeof body == 'string' ? body : JSON.stringify(body);
 			options.method = 'PUT';
+			break;
+		}
+		case ACTIONS.UPDATE_PHOTOS: {
+			const { body } = args;
+
+			if (!body) {
+				throw new Error('Missing required data');
+			}
+
+			options.body = typeof body == 'string' ? body : JSON.stringify(body);
+			options.method = 'POST';
 			break;
 		}
 		case ACTIONS.UPLOAD_PHOTO: {
