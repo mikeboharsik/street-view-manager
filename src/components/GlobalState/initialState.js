@@ -1,6 +1,4 @@
-import React from 'react';
-
-export const initialState = {
+const initialState = {
 	fetcher: {
 		photo: {
 			inProgress: null,
@@ -23,6 +21,4 @@ export const initialState = {
 	},
 };
 
-const GlobalState = React.createContext();
-
-export default GlobalState;
+export default initialState;

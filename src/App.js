@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import PulseLoader from 'react-spinners/PulseLoader';
 
-import GlobalState, { initialState } from './components/GlobalState';
+import GlobalState, { GlobalStateProvider, initialState } from './components/GlobalState';
 import checkAccessToken from './utilities/checkAccessToken';
 
 import { Landing, OAuth, PhotoEditor, PhotoUploader, UtilityBar } from './components';
@@ -37,7 +37,7 @@ function App() {
 
   return (
     <div className="App">
-      <GlobalState.Provider value={{ setState, ...state }}>
+      <GlobalStateProvider value={{ setState, ...state }}>
         <ToastContainer position={'top-center'} theme={'dark'} />
         <Loader />
         <Router>
@@ -49,7 +49,7 @@ function App() {
             <Route path="/" component={Landing} />
           </Switch>
         </Router>
-      </GlobalState.Provider>
+      </GlobalStateProvider>
     </div>
   );
 }
