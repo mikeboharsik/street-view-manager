@@ -1,11 +1,12 @@
-import { useContext } from "react";
+import { useContext } from 'react';
 import { toast } from 'react-toastify';
-import { useLocation } from "react-router";
+import { useLocation } from 'react-router';
 
-import { Gear, X } from "../icons";
-import GlobalState from "../GlobalState";
+import { Gear, X } from '../icons';
+import GlobalState from '../GlobalState';
+import useFeatureFlags, { FEATURE_FLAGS } from '../../hooks/useFeatureFlags';
 
-import fetcher, { ACTIONS } from "../../utilities/fetcher";
+import fetcher, { ACTIONS } from '../../utilities/fetcher';
 
 import './UtilityBar.css';
 
@@ -207,22 +208,20 @@ function Functions() {
 
 export default function UtilityBar() {
 	const state = useContext(GlobalState);
-	const { isAuthed, uploads: { multiselect: { isEnabled } }, showLoader } = state;
+	const { isAuthed, uploads: { multiselect: { isEnabled: isMultiselectEnabled } }, showLoader } = state;
 
 	const { pathname } = useLocation();
+	const { isEnabled: isFeatureEnabled } = useFeatureFlags();
 
-	if (!isAuthed || showLoader || pathname !== '/') {
+	const isUtilityBarEnabled = isFeatureEnabled(FEATURE_FLAGS.UTILITY_BAR);
+
+	if (!isAuthed || !isUtilityBarEnabled || showLoader || pathname !== '/') {
 		return null;
 	}
 
-	const className = `utilityBar-container-${isEnabled ? 'active' : 'inactive'}`;
+	const className = `utilityBar-container-${isMultiselectEnabled ? 'active' : 'inactive'}`;
 
-	let Indicator;
-	if (isEnabled) {
-		Indicator = X;
-	} else {
-		Indicator = Gear;
-	}
+	const Indicator = isMultiselectEnabled ? X : Gear;
 
 	return (
 		<div className={className} id="utilityBar-container">

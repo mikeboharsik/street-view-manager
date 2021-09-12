@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import GlobalState from '../GlobalState';
 import fetcher, { ACTIONS } from '../../utilities/fetcher';
 import { Chain as ChainIcon, Eye as EyeIcon } from '../icons';
-
-import { Link } from 'react-router-dom';
+import useFeatureFlags, { FEATURE_FLAGS } from '../../hooks/useFeatureFlags';
 
 import './Landing.css';
 
@@ -198,6 +199,9 @@ function PhotosNav() {
 export default function Config() {
 	const { fetcher: { photos: { inProgress } }, isAuthed, setState, uploads: { photos } } = useContext(GlobalState);
 
+	const { isEnabled } = useFeatureFlags();
+	const isAddPhotosEnabled = isEnabled(FEATURE_FLAGS.ADD_PHOTOS);
+
 	useEffect(() => {
 		if (isAuthed && inProgress === null) {
 			async function getPhotos() {
@@ -248,6 +252,11 @@ export default function Config() {
 		return null;
 	}
 
+	let addPhotosLink = null;
+	if (isAddPhotosEnabled) {
+		addPhotosLink = <Link style={{ textDecoration: 'none' }} to="/photoUploader">+</Link>;
+	}
+
 	return (
 		<>
 			<div className="header">
@@ -255,7 +264,7 @@ export default function Config() {
 					Photos
 					<span style={{ fontWeight: 'bold', position: 'absolute' }}>
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<Link style={{ textDecoration: 'none' }} to="/photoUploader">+</Link>
+						{addPhotosLink}
 					</span>
 				</span>
 			</div>

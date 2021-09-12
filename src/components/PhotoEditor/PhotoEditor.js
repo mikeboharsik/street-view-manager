@@ -21,9 +21,14 @@ function Connection({ data }) {
 }
 
 function Connections({ connections }) {
+	let content = 'None';
+	if (connections) {
+		content = connections.map((c) => <Connection data={c} key={c.target.id} />);
+	}
+
 	return (
 		<span>
-			Connections: {connections?.map((c) => <Connection data={c} key={c.target.id} />) || 'None'}
+			Connections: {content}
 		</span>
 	);
 }
