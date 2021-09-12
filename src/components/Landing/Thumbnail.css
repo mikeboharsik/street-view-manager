@@ -1,0 +1,22 @@
+.thumbnail-container {
+	align-self: center;
+	box-shadow: 0px 0px 8px black;
+	justify-self: center;
+	height: fit-content;
+	position: relative;
+}
+
+.thumbnail-container > a {
+	display: flex;
+}
+
+.thumbnail-image:hover {
+	filter: brightness(0.8);
+	transition: 0.3s;
+}
+
+.thumbnail-image {
+	position: relative;
+	transition: 0.3s;
+	width: 100%;
+}

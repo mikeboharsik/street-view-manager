@@ -1,0 +1,43 @@
+.thumbnail-overlay-container {
+	color: white;
+	height: 100%;
+	left: 0;
+	pointer-events: none;
+	position: absolute;
+	text-shadow: 0px 0px 2px black, 0px 0px 2px black, 0px 0px 2px black;
+	top: 0;
+	user-select: none;
+	width: 100%;
+}
+
+.thumbnail-overlay-item {
+	pointer-events: visible;
+	position: absolute;
+}
+
+.thumbnail-overlay-connections {
+	padding-left: 0.5em;
+	padding-top: 0.25em;
+}
+
+.thumbnail-overlay-capturetime {
+	padding-right: 0.5em;
+	right: 0;
+	top: 0;
+}
+
+.thumbnail-overlay-viewcount {
+	bottom: 0;
+	padding-left: 0.5em;
+}
+
+.thumbnail-overlay-placenames {
+	bottom: 0;
+	max-width: 70%;
+	overflow: hidden;
+	padding-right: 0.5em;
+	pointer-events: auto;
+	right: 0;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}

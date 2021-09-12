@@ -1,0 +1,7 @@
+#photos-nav-container {
+	display: flex;
+	flex-direction: row;
+	font-weight: bold;
+	justify-content: center;
+	user-select: none;
+}

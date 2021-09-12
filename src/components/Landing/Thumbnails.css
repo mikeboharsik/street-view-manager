@@ -1,0 +1,17 @@
+#thumbnails-container {
+	align-content: center;
+	column-gap: 2em;
+	justify-content: center;
+	display: grid;
+	grid-template-columns: 25% 25% 25%;
+	grid-template-rows: 25% 25% 25%;
+	position: relative;
+	row-gap: 3em;
+}
+
+.invisible {
+	cursor: default;
+	opacity: 0;
+	user-select: none;
+	pointer-events: none;
+}
