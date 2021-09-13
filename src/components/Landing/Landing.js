@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import GlobalState from '../GlobalState';
 import getPhotos from './getPhotos';
-import useFeatureFlags, { FEATURE_FLAGS } from '../../hooks/useFeatureFlags';
+import { FEATURE_FLAGS, useFeatureFlags, useIsAuthed } from '../../hooks';
 
 import { PhotosNav, Thumbnails } from '.';
 
@@ -25,7 +25,8 @@ function AddPhotosLink() {
 }
 
 export default function Landing() {
-	const { fetcher: { photos: { inProgress } }, isAuthed, setState, uploads: { photos } } = useContext(GlobalState);
+	const { fetcher: { photos: { inProgress } }, setState, uploads: { photos } } = useContext(GlobalState);
+	const isAuthed = useIsAuthed();
 
 	useEffect(() => {
 		if (isAuthed && inProgress === null) {

@@ -4,7 +4,7 @@ import { useLocation } from 'react-router';
 
 import { Gear, X } from '../icons';
 import GlobalState from '../GlobalState';
-import useFeatureFlags, { FEATURE_FLAGS } from '../../hooks/useFeatureFlags';
+import { FEATURE_FLAGS, useFeatureFlags, useIsAuthed } from '../../hooks';
 
 import fetcher, { ACTIONS } from '../../utilities/fetcher';
 
@@ -208,7 +208,8 @@ function Functions() {
 
 export default function UtilityBar() {
 	const state = useContext(GlobalState);
-	const { isAuthed, uploads: { multiselect: { isEnabled: isMultiselectEnabled } }, showLoader } = state;
+	const { uploads: { multiselect: { isEnabled: isMultiselectEnabled } }, showLoader } = state;
+	const isAuthed = useIsAuthed();
 
 	const { pathname } = useLocation();
 	const { isEnabled: isFeatureEnabled } = useFeatureFlags();
