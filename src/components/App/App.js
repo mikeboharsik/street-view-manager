@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import PulseLoader from 'react-spinners/PulseLoader';
 
-import GlobalState, { GlobalStateProvider, initialState } from './components/GlobalState';
-import checkAccessToken from './utilities/checkAccessToken';
+import GlobalState, { GlobalStateProvider, initialState } from '../GlobalState';
+import checkAccessToken from '../../utilities/checkAccessToken';
 
-import { Landing, OAuth, PhotoEditor, PhotoUploader, UtilityBar } from './components';
+import { Landing, OAuth, PhotoEditor, PhotoUploader, UtilityBar } from '..';
 
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css'
@@ -25,7 +25,7 @@ function Loader() {
   return null;
 }
 
-function App() {
+export default function App() {
   const [state, setState] = useState(initialState);
 
   const haveAccessToken = checkAccessToken();
@@ -53,5 +53,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
