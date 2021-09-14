@@ -1,29 +1,16 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import PulseLoader from 'react-spinners/PulseLoader';
 
-import GlobalState, { GlobalStateProvider, initialState } from '../GlobalState';
+import { GlobalStateProvider, initialState } from '../GlobalState';
 import checkAccessToken from '../../utilities/checkAccessToken';
 
 import { Landing, OAuth, PhotoEditor, PhotoUploader, UtilityBar } from '..';
 
+import Loader from './Loader';
+
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css'
-
-function Loader() {
-  const { showLoader } = useContext(GlobalState);
-
-  if (showLoader) {
-    return (
-      <div id="loader-container">
-        <PulseLoader color="white" />
-      </div>
-    );
-  }
-
-  return null;
-}
 
 export default function App() {
   const [state, setState] = useState(initialState);
