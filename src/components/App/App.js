@@ -24,10 +24,10 @@ export default function App() {
 
   return (
     <div className="App">
-      <GlobalStateProvider value={{ setState, ...state }}>
-        <ToastContainer position={'top-center'} theme={'dark'} />
-        <Loader />
-        <Router>
+      <Router>
+        <GlobalStateProvider value={{ setState, ...state }}>
+          <ToastContainer position={'top-center'} theme={'dark'} />
+          <Loader />
           <Footer />
           <UtilityBar />
           <Switch>
@@ -36,8 +36,8 @@ export default function App() {
             <Route path="/oauth" component={OAuth} exact />
             <Route path="/" component={Landing} />
           </Switch>
-        </Router>
-      </GlobalStateProvider>
+        </GlobalStateProvider>
+      </Router>
     </div>
   );
 }

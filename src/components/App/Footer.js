@@ -1,11 +1,14 @@
-import { useFeatureFlags } from '../../hooks';
+import { useContext } from 'react';
+import GlobalState from '../GlobalState';
+import { FEATURE_FLAGS, useFeatureFlags } from '../../hooks';
 
 import './Footer.css';
 
 export default function Footer() {
+	const { showLoader } = useContext(GlobalState);
 	const { isEnabled } = useFeatureFlags();
 
-	if (!isEnabled) {
+	if (!isEnabled(FEATURE_FLAGS.FOOTER) || showLoader) {
 		return null;
 	}
 
