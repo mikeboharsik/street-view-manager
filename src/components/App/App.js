@@ -7,7 +7,7 @@ import checkAccessToken from '../../utilities/checkAccessToken';
 
 import { Landing, OAuth, PhotoEditor, PhotoUploader, UtilityBar } from '..';
 
-import Loader from './Loader';
+import { Footer, Loader } from '.';
 
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css'
@@ -28,6 +28,7 @@ export default function App() {
         <ToastContainer position={'top-center'} theme={'dark'} />
         <Loader />
         <Router>
+          <Footer />
           <UtilityBar />
           <Switch>
             <Route path="/photoEditor/:photoId" component={PhotoEditor} exact />

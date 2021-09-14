@@ -2,6 +2,9 @@ const initFeatureFlags = {
 	ADD_PHOTOS: {
 		isEnabled: false,
 	},
+	FOOTER: {
+		isEnabled: false,
+	},
 	UTILITY_BAR: {
 		isEnabled: false,
 	}
@@ -38,6 +41,10 @@ export default function useFeatureFlags() {
 
 	if (!window.localStorage.getItem('featureFlags')) {
 		window.localStorage.setItem('featureFlags', JSON.stringify(initFeatureFlags));
+	} else {
+		let featureFlags = JSON.parse(window.localStorage.getItem('featureFlags'));
+		const newFeatureFlags = { ...initFeatureFlags, ...featureFlags };
+		window.localStorage.setItem('featureFlags', JSON.stringify(newFeatureFlags));
 	}
 
 	return { clear, get, isEnabled, remove, set };

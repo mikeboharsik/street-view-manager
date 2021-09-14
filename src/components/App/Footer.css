@@ -1,0 +1,10 @@
+#footer-container {
+	background-color: rgba(0, 0, 0, 0.2);
+	bottom: 0px;
+	padding: 4px;
+	position: absolute;
+}
+
+#footer-container > span {
+	padding: 0px 8px;
+}
