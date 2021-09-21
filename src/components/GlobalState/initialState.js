@@ -1,11 +1,20 @@
 const initialState = {
 	fetcher: {
+		gitHash: {
+			inProgress: null,
+		},
 		photo: {
 			inProgress: null,
 		},
 		photos: {
 			inProgress: null,
 		},
+	},
+	meta: {
+		gitHash: null,
+	},
+	modal: {
+		form: null,
 	},
 	isAuthed: false,
 	showLoader: false,
