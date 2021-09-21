@@ -7,7 +7,7 @@ import checkAccessToken from '../../utilities/checkAccessToken';
 
 import { Landing, OAuth, PhotoEditor, PhotoUploader, UtilityBar } from '..';
 
-import { Footer, Loader } from '.';
+import { Footer, Loader, Modal } from '.';
 
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css'
@@ -30,6 +30,7 @@ export default function App() {
           <Loader />
           <Footer />
           <UtilityBar />
+          <Modal />
           <Switch>
             <Route path="/photoEditor/:photoId" component={PhotoEditor} exact />
             <Route path="/photoUploader" component={PhotoUploader} exact />
