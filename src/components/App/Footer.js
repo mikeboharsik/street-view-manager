@@ -2,7 +2,6 @@ import { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 import GlobalState from '../GlobalState';
-import { FEATURE_FLAGS, useFeatureFlags } from '../../hooks';
 
 import './Footer.css';
 
@@ -23,9 +22,7 @@ async function getGitHash(setState) {
 export default function Footer() {
 	const { fetcher: { gitHash: { inProgress: fetchingGitHash } }, meta: { gitHash }, setState, showLoader } = useContext(GlobalState);
 
-	const { isEnabled } = useFeatureFlags();
-
-	const shouldRender = isEnabled(FEATURE_FLAGS.FOOTER) && !showLoader;
+	const shouldRender = !showLoader;
 
 	useEffect(() => {
 		if (shouldRender && !gitHash && fetchingGitHash !== false) {
@@ -39,14 +36,29 @@ export default function Footer() {
 
 	return (
 		<div id="footer-container">
-			<span><a href="https://github.com/mikeboharsik/street-view-manager" rel="noreferrer" target="_blank">GitHub</a></span>
-			<span
-				onClick={async () => {
-					await navigator.clipboard.writeText(gitHash);
-					toast('Copied git hash!');
-				}}
-				style={{ cursor: 'default' }}
-				title={gitHash}>ⓘ</span>
+			<div id="footer-links-container">
+				<span><a href="https://github.com/mikeboharsik/street-view-manager" rel="noreferrer" target="_blank">GitHub</a></span>
+				<span
+					onClick={async (e) => {
+						const { ctrlKey } = e;
+
+						if (ctrlKey) {
+							await navigator.clipboard.writeText(gitHash);
+							toast('Copied git hash!');
+						} else {
+							window.open(`https://github.com/mikeboharsik/street-view-manager/commit/${gitHash}`);
+						}
+					}}
+					style={{ cursor: 'pointer', position: 'absolute', right: 0 }}
+					title={gitHash}
+				>
+					ⓘ
+				</span>
+			</div>
+
+			<div id="footer-disclaimer-container">
+				<span>This third-party application is not associated in any way with Google</span>
+			</div>
 		</div>
 	);
 }

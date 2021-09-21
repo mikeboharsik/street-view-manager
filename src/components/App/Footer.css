@@ -1,10 +1,26 @@
 #footer-container {
 	background-color: rgba(0, 0, 0, 0.2);
 	bottom: 0px;
+	display: flex;
+	flex-direction: column;
 	padding: 4px;
 	position: absolute;
 }
 
 #footer-container > span {
+	padding: 0px 8px;
+}
+
+#footer-disclaimer-container {
+	font-size: 11px;	
+	user-select: none;
+}
+
+#footer-links-container {
+	display: flex;
+	justify-content: center;
+}
+
+#footer-links-container > span {
 	padding: 0px 8px;
 }

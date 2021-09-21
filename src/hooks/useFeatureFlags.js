@@ -2,9 +2,6 @@ const initFeatureFlags = {
 	ADD_PHOTOS: {
 		isEnabled: false,
 	},
-	FOOTER: {
-		isEnabled: false,
-	},
 	UTILITY_BAR: {
 		isEnabled: false,
 	}
