@@ -27,6 +27,7 @@ const initialState = {
 		photos: null,
 		photosPerPage: 9,
 		places: {},
+		thumbnails: {},
 	},
 };
 
