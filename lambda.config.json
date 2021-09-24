@@ -1,0 +1,12 @@
+{
+	"dev": {
+		"clientId": null,
+		"key": null,
+		"lambdaFunctionName": null
+	},
+	"prod": {
+		"clientId": null,
+		"key": null,
+		"lambdaFunctionName": null
+	}
+}

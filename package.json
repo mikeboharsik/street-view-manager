@@ -16,8 +16,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && yarn git-hash",
-    "build-with-hash": "react-scripts build && yarn git-hash",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "git-hash": "git rev-parse head > ./build/git-version.txt"
