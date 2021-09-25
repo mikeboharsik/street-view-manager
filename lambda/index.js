@@ -13,7 +13,6 @@ exports.handler = async event => {
     return {
         statusCode: 404,
         headers: {
-            'Cache-Control': 'no-store',
             'Content-Type': 'text/html',  
         },
         body: await fs.readFile('./404.html', 'utf8'),
