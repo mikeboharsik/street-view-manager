@@ -18,7 +18,6 @@ exports.mapHandler = event => {
         let { path } = h;
         let paramIds = path.match(/(:\w+)/g);
         if (paramIds) {
-            paramIds = paramIds;
             paramIds.forEach(id => {
                 path = path.replace(id, '(\\S+)');
             });
