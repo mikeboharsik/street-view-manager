@@ -8,8 +8,7 @@ const faviconGetHandler = {
         return {
             statusCode: 200,
             headers: {
-                'content-type': 'image/svg+xml',  
-                'cache-control': 'no-store',
+                'content-type': 'image/svg+xml',
             },
             body,
         };  
