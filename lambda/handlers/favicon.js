@@ -1,10 +1,10 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 
 const faviconGetHandler = {
     method: 'GET',
     path: '/favicon.ico',
     action: async () => {
-        const body = fs.readFileSync('./favicon.svg', 'utf8');
+        const body = await fs.readFile('./build/favicon.svg', 'utf8');
         return {
             statusCode: 200,
             headers: {

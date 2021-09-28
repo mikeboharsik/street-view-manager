@@ -1,7 +1,9 @@
-const { staticHandlers } = require('./static');
 const { defaultHandlers } = require('./default');
+const { faviconHandlers } = require('./favicon');
+const { staticHandlers } = require('./static');
 
-const handlers = [ ...staticHandlers, ...defaultHandlers ];
+// order is important here; should be most specific to least specific paths
+const handlers = [ ...faviconHandlers, ...staticHandlers, ...defaultHandlers ];
 
 exports.handlers = handlers;
 

@@ -2,7 +2,7 @@ const fs = require('fs/promises');
 
 const rootContentGetHandler = {
     method: 'GET',
-    paths: ['.ico', '.json', '.png', '.svg', '.txt'],
+    paths: ['.json', '.png', '.svg', '.txt'],
     action: async (event) => {
         const { rawPath } = event;
         
