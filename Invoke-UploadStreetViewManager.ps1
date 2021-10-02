@@ -3,7 +3,8 @@ Param(
 	[switch] $Dev,
 	[switch] $KeepStagingFiles,
 	[switch] $SkipUpload,
-	[switch] $OpenStagingPath
+	[switch] $OpenStagingPath,
+	[switch] $TestsOnly
 )
 
 Write-Verbose "`$Dev = $Dev"
@@ -69,6 +70,16 @@ try {
 
 	$env:REACT_APP_KEY = $appKey
 	Write-Verbose "`$env:REACT_APP_KEY = '$env:REACT_APP_KEY'"
+
+	yarn test --watchAll=false
+	if (!$?) {
+		Write-Error "Unit tests failed"
+		return 1
+	}
+
+	if ($TestsOnly) {
+		return
+	}
 
 	yarn build
 	Write-Verbose "Command 'yarn build' completed"
