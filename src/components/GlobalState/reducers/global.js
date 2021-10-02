@@ -12,6 +12,7 @@ export const ACTIONS = {
 	SET_MODAL: 'SET_MODAL',
 	SET_SHOWLOADER: 'SET_SHOWLOADER',
 	SET_THUMBNAIL_DATA: 'SET_THUMBNAIL_DATA',
+	SORT_PHOTOS: 'SORT_PHOTOS',
 	TOGGLE_MULTISELECT: 'TOGGLE_MULTISELECT',
 	TOGGLE_MULTISELECT_ID: 'TOGGLE_MULTISELECT_ID',
 	UPDATE_PHOTO: 'UPDATE_PHOTO',
@@ -136,6 +137,24 @@ export default function globalReducer(state, action) {
 
 			const newThumbnails = { ...state.uploads.thumbnails, [photoId]: dataUrl };
 			const newUploads = { ...state.uploads, thumbnails: newThumbnails };
+
+			return { ...state, uploads: newUploads };
+		}
+		case ACTIONS.SORT_PHOTOS: {
+			const { reverse, sortFunc, sortProp } = payload;
+
+			const newPhotos = [ ...state.uploads.photos ];
+			if (sortFunc) {
+				newPhotos.sort(sortFunc);
+			} else {
+				newPhotos.sort((a, b) => a[sortProp] < b[sortProp] ? -1 : a[sortProp] > b[sortProp] ? 1 : 0);
+			}
+
+			if (reverse) {
+				newPhotos.reverse();
+			}
+
+			const newUploads = { ...state.uploads, photos: newPhotos };
 
 			return { ...state, uploads: newUploads };
 		}

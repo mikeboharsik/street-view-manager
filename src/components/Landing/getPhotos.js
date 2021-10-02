@@ -17,6 +17,7 @@ export default async function getPhotos(dispatch) {
 	} catch(e) {
 		console.error(e);
 	} finally {
+		dispatch({ payload: { reverse: true, sortProp: 'captureTime' }, type: ACTIONS.SORT_PHOTOS });
 		dispatch({ payload: { showLoader: false }, type: ACTIONS.SET_SHOWLOADER });
 		dispatch({ payload: { inProgress: false, type: 'photos' }, type: ACTIONS.SET_FETCHER });
 	}

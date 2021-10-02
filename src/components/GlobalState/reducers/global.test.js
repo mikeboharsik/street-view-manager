@@ -267,6 +267,57 @@ describe('uploads', () => {
 			});
 		});
 
+		describe('SORT_PHOTOS', () => {
+			it('sorts photos according to the provided function', () => {
+				const testSortFunc1 = (a, b) => a.captureTime < b.captureTime ? -1 : a.captureTime > b.captureTime ? 1 : 0;
+				const action1 = { payload: { sortFunc: testSortFunc1 }, type: ACTIONS.SORT_PHOTOS };
+
+				const testSortFunc2 = (a, b) => a.uploadTime < b.uploadTime ? -1 : a.uploadTime > b.uploadTime ? 1 : 0;
+				const action2 = { payload: { sortFunc: testSortFunc2 }, type: ACTIONS.SORT_PHOTOS };
+
+				const action3 = { payload: { sortProp: 'captureTime' }, type: ACTIONS.SORT_PHOTOS };
+
+				const action4 = { payload: { reverse: true, sortProp: 'captureTime' }, type: ACTIONS.SORT_PHOTOS };
+
+				const photo1 = { captureTime: '2004-01-01T00:00:00Z', uploadTime: '2005-01-01T00:00:00Z' };
+				const photo2 = { captureTime: '2003-01-01T00:00:00Z', uploadTime: '2004-01-01T00:00:00Z' };
+				const photo3 = { captureTime: '2001-01-01T00:00:00Z', uploadTime: '2003-01-01T00:00:00Z' };
+				const photo4 = { captureTime: '2002-01-01T00:00:00Z', uploadTime: '2002-01-01T00:00:00Z' };
+				const photo5 = { captureTime: '2005-01-01T00:00:00Z', uploadTime: '2001-01-01T00:00:00Z' };
+
+				const testPhotos = [photo1, photo2, photo3, photo4, photo5];
+				const stateWithPhotos = { ...initialState, uploads: { ...initialState.uploads, photos: testPhotos } };
+
+				const state1 = globalReducer(stateWithPhotos, action1);
+				expect(state1.uploads.photos[0]).toBe(photo3);
+				expect(state1.uploads.photos[1]).toBe(photo4);
+				expect(state1.uploads.photos[2]).toBe(photo2);
+				expect(state1.uploads.photos[3]).toBe(photo1);
+				expect(state1.uploads.photos[4]).toBe(photo5);
+
+				const state2 = globalReducer(stateWithPhotos, action2);
+				expect(state2.uploads.photos[0]).toBe(photo5);
+				expect(state2.uploads.photos[1]).toBe(photo4);
+				expect(state2.uploads.photos[2]).toBe(photo3);
+				expect(state2.uploads.photos[3]).toBe(photo2);
+				expect(state2.uploads.photos[4]).toBe(photo1);
+
+				const state3 = globalReducer(stateWithPhotos, action3);
+				expect(state3.uploads.photos[0]).toBe(photo3);
+				expect(state3.uploads.photos[1]).toBe(photo4);
+				expect(state3.uploads.photos[2]).toBe(photo2);
+				expect(state3.uploads.photos[3]).toBe(photo1);
+				expect(state3.uploads.photos[4]).toBe(photo5);
+
+				const state4 = globalReducer(stateWithPhotos, action4);
+				expect(state4.uploads.photos[0]).toBe(photo5);
+				expect(state4.uploads.photos[1]).toBe(photo1);
+				expect(state4.uploads.photos[2]).toBe(photo2);
+				expect(state4.uploads.photos[3]).toBe(photo4);
+				expect(state4.uploads.photos[4]).toBe(photo3);
+			});
+		});
+
 		describe('UPDATE_PHOTO', () => {
 			it('adds photo if it does not already exist', () => {
 				const initialPhotos = [{ photoId: { id: 'photo1' } }, { photoId: { id: 'photo2' } }];
