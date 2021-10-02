@@ -1,40 +1,23 @@
-import fetcher, { ACTIONS } from '../../utilities/fetcher';
+import fetcher, { ACTIONS as FETCHER_ACTIONS } from '../../utilities/fetcher';
+import { ACTIONS } from '../GlobalState/reducers/global';
 
-export default async function getPhotos(setState) {
+export default async function getPhotos(dispatch) {
 	try {
-		setState((prev) => ({ ...prev, fetcher: { ...prev.fetcher, photos: { inProgress: true } }, showLoader: true }));
+		dispatch({ payload: { showLoader: true }, type: ACTIONS.SET_SHOWLOADER });
+		dispatch({ payload: { inProgress: true, type: 'photos' }, type: ACTIONS.SET_FETCHER });
 
 		let pageToken = null;
-		const allPhotos = [];
 		do {
-			const res = await fetcher(ACTIONS.GET_PHOTOS, { pageToken }).then((res) => res.json());
+			const res = await fetcher(FETCHER_ACTIONS.GET_PHOTOS, { pageToken }).then((res) => res.json());
 
 			pageToken = res.nextPageToken;
 
-			allPhotos.push(...res.photos);
+			dispatch({ payload: { photos: res.photos }, type: ACTIONS.ADD_PHOTOS });
 		} while(pageToken);
-		allPhotos.sort((a, b) => a.captureTime > b.captureTime ? -1 : a.captureTime < b.captureTime ? 1 : 0);
-
-		const allPlaces = allPhotos.reduce((acc, cur) => {
-			const { places } = cur;
-
-			places?.forEach((place) => {
-				const { placeId } = place;
-
-				if (!acc[placeId]) {
-					acc[placeId] = place;
-				}
-			});
-
-			return acc;
-		}, {});
-
-		setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: allPhotos, places: allPlaces } }));
 	} catch(e) {
 		console.error(e);
-
-		setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: [] } }));
 	} finally {
-		setState((prev) => ({ ...prev, fetcher: { ...prev.fetcher, photos: { inProgress: false } }, showLoader: false }));
+		dispatch({ payload: { showLoader: false }, type: ACTIONS.SET_SHOWLOADER });
+		dispatch({ payload: { inProgress: false, type: 'photos' }, type: ACTIONS.SET_FETCHER });
 	}
 }

@@ -6,27 +6,10 @@ import { Gear, X } from '../icons';
 import GlobalState from '../GlobalState';
 import { FEATURE_FLAGS, useFeatureFlags, useIsAuthed } from '../../hooks';
 
-import fetcher, { ACTIONS } from '../../utilities/fetcher';
+import fetcher, { ACTIONS as FETCHER_ACTIONS } from '../../utilities/fetcher';
 
 import './UtilityBar.css';
-
-function getUtilityBarToggle(state) {
-	return function toggleUtilityBar() {
-		const { setState } = state;
-
-		setState((prev) => ({
-			...prev,
-			uploads: {
-				...prev.uploads,
-				multiselect: {
-					...prev.uploads.multiselect,
-					ids: !prev.uploads.multiselect.isEnabled ? prev.uploads.multiselect.ids : [],
-					isEnabled: !prev.uploads.multiselect.isEnabled,
-				},
-			},
-		}));
-	}
-}
+import { ACTIONS } from '../GlobalState/reducers/global';
 
 function getConnectHandler(state) {
 	return async function handleConnect() {
@@ -71,7 +54,7 @@ function getConnectHandler(state) {
 		}));
 
 		try {
-			const res = await fetcher(ACTIONS.UPDATE_PHOTOS, { body });
+			const res = await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
 			if (!res.ok) {
 				toast('Update connections request was not OK', { type: 'error' });
 			} else {
@@ -111,7 +94,7 @@ function getUpdatePlacesHandler(state) {
 		}));
 
 		try {
-			const res = await fetcher(ACTIONS.UPDATE_PHOTOS, { body });
+			const res = await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
 			if (!res.ok) {
 				toast('Update places request was not OK', { type: 'error' });
 			} else {
@@ -153,7 +136,7 @@ function getUpdateLevelHandler(state) {
 		}));
 
 		try {
-			const res = await fetcher(ACTIONS.UPDATE_PHOTOS, { body });
+			const res = await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
 			if (!res.ok) {
 				toast('Update level request was not OK', { type: 'error' });
 			} else {
@@ -165,30 +148,9 @@ function getUpdateLevelHandler(state) {
 	}
 }
 
-function getClearHandler(state) {
-	return function handleClear() {
-		const { setState, uploads: { multiselect: { ids } } } = state;
-
-		if (ids.length <= 0) {
-			return;
-		}
-
-		setState((prev) => ({
-			...prev,
-			uploads: {
-				...prev.uploads,
-				multiselect: {
-					...prev.uploads.multiselect,
-					ids: [],
-				},
-			},
-		}));
-	};
-}
-
 function Functions() {
-	const state = useContext(GlobalState);
-	const { uploads: { multiselect: { ids, isEnabled } } } = state;
+	const { state } = useContext(GlobalState);
+	const { dispatch, uploads: { multiselect: { ids, isEnabled } } } = state;
 
 	const functionClassName = `utilityBar-function-${isEnabled ? 'active' : 'inactive'}`;
 
@@ -201,14 +163,14 @@ function Functions() {
 			<div className={functionClassName} onClick={getConnectHandler(state)}>Con</div>
 			<div className={functionClassName} onClick={getUpdatePlacesHandler(state)}>Places</div>
 			<div className={functionClassName} onClick={getUpdateLevelHandler(state)}>Level</div>
-			<div className={functionClassName} onClick={getClearHandler(state)}>{`Clear (${ids.length})`}</div>
+			<div className={functionClassName} onClick={() => dispatch({ type: ACTIONS.CLEAR_MULTISELECT })}>{`Clear (${ids.length})`}</div>
 		</div>
 	);
 }
 
 export default function UtilityBar() {
 	const state = useContext(GlobalState);
-	const { uploads: { multiselect: { isEnabled: isMultiselectEnabled } }, showLoader } = state;
+	const { dispatch, state: { uploads: { multiselect: { isEnabled: isMultiselectEnabled } }, showLoader } } = state;
 	const isAuthed = useIsAuthed();
 
 	const { pathname } = useLocation();
@@ -226,7 +188,7 @@ export default function UtilityBar() {
 
 	return (
 		<div className={className} id="utilityBar-container">
-			<Indicator onClick={getUtilityBarToggle(state)} style={{ cursor: 'pointer' }} />
+			<Indicator onClick={() => dispatch({ type: ACTIONS.TOGGLE_MULTISELECT })} style={{ cursor: 'pointer' }} />
 
 			<Functions />
 		</div>

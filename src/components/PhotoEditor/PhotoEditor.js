@@ -3,9 +3,10 @@ import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import GlobalState from '../GlobalState';
-import fetcher, { ACTIONS } from '../../utilities/fetcher';
+import fetcher, { ACTIONS as FETCHER_ACTIONS } from '../../utilities/fetcher';
 
 import './PhotoEditor.css'
+import { ACTIONS } from '../GlobalState/reducers/global';
 
 function Connection({ data }) {
 	return (
@@ -41,7 +42,7 @@ export default function PhotoEditor({ match }) {
 		history.push('/');
 	}
 
-	const { setState, uploads: { photos, places } } = useContext(GlobalState);
+	const { dispatch, state: { uploads: { photos, places } } } = useContext(GlobalState);
 	const coordinatesInput = useRef(null);
 	const altitudeInput = useRef(null);
 	const placesInput = useRef(null);
@@ -50,7 +51,7 @@ export default function PhotoEditor({ match }) {
 	const [curPhoto, setCurPhoto] = useState(null);
 
 	async function updatePhoto(options) {
-		const res = await fetcher(ACTIONS.UPDATE_PHOTO, options);
+		const res = await fetcher(FETCHER_ACTIONS.UPDATE_PHOTO, options);
 		if (!res.ok) {
 			console.error(await res.json());
 			throw res.status;
@@ -111,12 +112,7 @@ export default function PhotoEditor({ match }) {
 		try {
 			await updatePhoto(options);
 
-			const newPhotos = [...photos];
-			const photoIdx = newPhotos.findIndex((p) => p.photoId.id === photoId);
-
-			newPhotos[photoIdx] = updatedPhoto;
-
-			setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: newPhotos } } ));
+			dispatch({ payload: { updatedPhoto }, type: ACTIONS.UPDATE_PHOTO });
 
 			placesInput.current.value = 'OK';
 		} catch(e) {
@@ -142,12 +138,7 @@ export default function PhotoEditor({ match }) {
 		try {
 			await updatePhoto(options);
 
-			const newPhotos = [...photos];
-			const photoIdx = newPhotos.findIndex((p) => p.photoId.id === photoId);
-
-			newPhotos[photoIdx] = updatedPhoto;
-
-			setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: newPhotos } } ));
+			dispatch({ payload: { updatedPhoto }, type: ACTIONS.UPDATE_PHOTO });
 
 			connectionsInput.current.value = 'OK';
 		} catch(e) {
@@ -164,12 +155,12 @@ export default function PhotoEditor({ match }) {
 		}
 
 		async function getPhoto() {
-			const res = await fetcher(ACTIONS.GET_PHOTO, { photoId }).then((res) => res.json());
+			const res = await fetcher(FETCHER_ACTIONS.GET_PHOTO, { photoId }).then((res) => res.json());
 
-			setState((prev) => ({ ...prev, uploads: { ...prev.uploads, photos: prev.uploads.photos ? [res, ...prev.uploads.photos] : [res] } }));
+			dispatch({ payload: { updatedPhoto: res }, type: ACTIONS.UPDATE_PHOTO });
 		}
 		getPhoto();
-	}, [photoId, photos, setState]);
+	}, [dispatch, photoId, photos]);
 
 	if (curPhoto) {
 		const {

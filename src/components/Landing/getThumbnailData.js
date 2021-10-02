@@ -1,4 +1,6 @@
-export default async function getThumbnailData(setState, photoId, thumbnailUrl) {
+import { ACTIONS } from '../GlobalState/reducers/global';
+
+export default async function getThumbnailData(dispatch, photoId, thumbnailUrl) {
 	let success = false;
 	let attempts = 0;
 	while (!success && attempts < 3) {
@@ -7,9 +9,9 @@ export default async function getThumbnailData(setState, photoId, thumbnailUrl) 
 
 			if (res.ok) {
 				const blob = await res.blob();
-				const bitsLocation = URL.createObjectURL(blob);
+				const dataUrl = URL.createObjectURL(blob);
 
-				setState((prev) => ({ ...prev, uploads: { ...prev.uploads, thumbnails: { ...prev.uploads.thumbnails, [photoId]: bitsLocation } } }));
+				dispatch({ payload: { dataUrl, photoId }, type: ACTIONS.SET_THUMBNAIL_DATA })
 
 				success = true;
 			}

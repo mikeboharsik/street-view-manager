@@ -7,6 +7,9 @@ import { FEATURE_FLAGS, useFeatureFlags, useIsAuthed } from '../../hooks';
 
 import { PhotosNav, Thumbnails } from '.';
 
+import { selectPhotos } from '../GlobalState/selectors/selectUploads';
+import selectFetcher from '../GlobalState/selectors/selectFetcher';
+
 import './Landing.css';
 
 function AddPhotosLink() {
@@ -25,16 +28,20 @@ function AddPhotosLink() {
 }
 
 export default function Landing() {
-	const { fetcher: { photos: { inProgress } }, setState, uploads: { photos } } = useContext(GlobalState);
 	const isAuthed = useIsAuthed();
+
+	const { dispatch, state } = useContext(GlobalState);
+
+	const { inProgress } = selectFetcher(state, 'photos');
+	const photos = selectPhotos(state);
 
 	useEffect(() => {
 		if (isAuthed && inProgress === null) {
-			getPhotos(setState);
+			getPhotos(dispatch);
 
 			return;
 		}
-	}, [inProgress, isAuthed, photos, setState]);
+	}, [dispatch, inProgress, isAuthed, photos]);
 
 	if (!isAuthed || !photos || inProgress) {
 		return null;
@@ -49,7 +56,7 @@ export default function Landing() {
 				</span>
 			</div>
 
-			<Thumbnails photos={photos} />
+			<Thumbnails />
 
 			<PhotosNav />
 		</>

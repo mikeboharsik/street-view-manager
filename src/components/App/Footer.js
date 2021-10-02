@@ -3,32 +3,34 @@ import { toast } from 'react-toastify';
 
 import GlobalState from '../GlobalState';
 
+import { ACTIONS } from '../GlobalState/reducers/global';
+
 import './Footer.css';
 
-async function getGitHash(setState) {
+async function getGitHash(dispatch) {
 	try {
-		setState((prev) => ({ ...prev, fetcher: { ...prev.fetcher, gitHash: { ...prev.fetcher.gitHash, inProgress: true }}}));
+		dispatch({ payload: { inProgress: true, type: 'gitHash'}, type: ACTIONS.SET_FETCHER });
 
 		const res = await fetch('/git-version.txt').then(res => res.text());
 
-		setState((prev) => ({ ...prev, meta: { ...prev.meta, gitHash: res }}));
+		dispatch({ payload: { gitHash: res }, type: ACTIONS.SET_GITHASH });
 	} catch(e) {
 		console.error(e);
 	} finally {
-		setState((prev) => ({ ...prev, fetcher: { ...prev.fetcher, gitHash: { ...prev.fetcher.gitHash, inProgress: false }}}));
+		dispatch({ payload: { inProgress: false, type: 'gitHash'}, type: ACTIONS.SET_FETCHER });
 	}
 }
 
 export default function Footer() {
-	const { fetcher: { gitHash: { inProgress: fetchingGitHash } }, meta: { gitHash }, setState, showLoader } = useContext(GlobalState);
+	const { dispatch, state: { fetcher: { gitHash: { inProgress: fetchingGitHash } }, meta: { gitHash }, showLoader } } = useContext(GlobalState);
 
 	const shouldRender = !showLoader;
 
 	useEffect(() => {
 		if (shouldRender && !gitHash && fetchingGitHash !== false) {
-			getGitHash(setState);
+			getGitHash(dispatch);
 		}
-	}, [fetchingGitHash, gitHash, setState, shouldRender]);
+	}, [dispatch, fetchingGitHash, gitHash, shouldRender]);
 
 	if (!shouldRender) {
 		return null;

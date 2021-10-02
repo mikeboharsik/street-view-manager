@@ -1,16 +1,17 @@
 import { useContext } from 'react';
 import GlobalState from '../GlobalState';
+import { ACTIONS } from '../GlobalState/reducers/global';
 
 import './PhotosNav.css'
 
 export default function PhotosNav() {
-	function NavButton({ char, isHidden, setStateHandler }) {
+	function NavButton({ char, isHidden, onClick }) {
 		const cursor = isHidden ? 'default' : 'pointer';
 		const opacity = isHidden ? 0 : 1;
 
 		return (
 			<span
-				onClick={() => { if (isHidden) return; setState(setStateHandler); }}
+				onClick={() => { if (isHidden) return; onClick(); }}
 				style={{ cursor, paddingLeft: '4px', paddingRight: '4px', opacity }}
 			>
 				{char}
@@ -41,7 +42,7 @@ export default function PhotosNav() {
     return `${zeroes}${curPage}`;
 	}
 
-	const { fetcher: { photos: { inProgress } }, setState, uploads: { currentPage, photos, photosPerPage } } = useContext(GlobalState);
+	const { dispatch, state: { fetcher: { photos: { inProgress } }, uploads: { currentPage, photos, photosPerPage } } } = useContext(GlobalState);
 
 	if (inProgress || photos.length <= 0) {
 		return null;
@@ -54,14 +55,19 @@ export default function PhotosNav() {
 	const hideRightRight = hideRight || currentPage + 1 === pageCount - 1;
 
 	const currentPageNav = getPaddedCurrentPage(currentPage, pageCount);
+	
+	const leftLeftHandler = () => dispatch({ type: ACTIONS.SET_CURRENTPAGE_FIRST });
+	const leftHandler = () => dispatch({ type: ACTIONS.DECREMENT_CURRENTPAGE });
+	const rightHandler = () => dispatch({ type: ACTIONS.INCREMENT_CURRENTPAGE });
+	const rightRightHandler = () => dispatch({ type: ACTIONS.SET_CURRENTPAGE_LAST });
 
 	return (
 		<div id="photos-nav-container">
-			<NavButton char={'<<'} isHidden={hideLeftLeft} setStateHandler={(prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: 0 }})} />
-			<NavButton char={'<'} isHidden={hideLeft} setStateHandler={(prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: currentPage - 1 }})} />
+			<NavButton char={'<<'} isHidden={hideLeftLeft} onClick={leftLeftHandler} />
+			<NavButton char={'<'} isHidden={hideLeft} onClick={leftHandler} />
 			<PageIndicator currentPageNav={currentPageNav} pageCountNav={pageCount} photos={photos} />
-			<NavButton char={'>'} isHidden={hideRight} setStateHandler={(prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: currentPage + 1 }})} />
-			<NavButton char={'>>'} isHidden={hideRightRight} setStateHandler={(prev) => ({ ...prev, uploads: { ...prev.uploads, currentPage: pageCount - 1 }})} />
+			<NavButton char={'>'} isHidden={hideRight} onClick={rightHandler} />
+			<NavButton char={'>>'} isHidden={hideRightRight} onClick={rightRightHandler} />
 		</div>
 	);
 }

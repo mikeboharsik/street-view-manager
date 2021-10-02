@@ -6,8 +6,8 @@ import Thumbnail from './Thumbnail';
 
 import './Thumbnails.css';
 
-export default function Thumbnails({ photos }) {
-	const { fetcher: { photos: { inProgress } }, uploads: { currentPage, photosPerPage } } = useContext(GlobalState);
+export default function Thumbnails() {
+	const { state: { fetcher: { photos: { inProgress } }, uploads: { currentPage, photos, photosPerPage } } } = useContext(GlobalState);
 
 	const [renderedPhotos, setRenderedPhotos] = useState(null);
 

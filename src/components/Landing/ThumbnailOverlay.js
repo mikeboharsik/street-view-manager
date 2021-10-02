@@ -7,7 +7,7 @@ import { Chain as ChainIcon, Eye as EyeIcon } from '../icons';
 import './ThumbnailOverlay.css';
 
 export default function ThumbnailOverlay({ photo }) {
-	const { uploads: { places } } = useContext(GlobalState);
+	const { state: { uploads: { places } } } = useContext(GlobalState);
 
 	const { captureTime, connections, places: photoPlaces, viewCount } = photo;
 

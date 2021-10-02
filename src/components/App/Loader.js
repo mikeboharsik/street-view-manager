@@ -6,7 +6,7 @@ import GlobalState from '../GlobalState';
 import './Loader.css';
 
 export default function Loader() {
-  const { showLoader } = useContext(GlobalState);
+  const { state: { showLoader } } = useContext(GlobalState);
 
   if (showLoader) {
     return (

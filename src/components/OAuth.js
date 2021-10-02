@@ -3,9 +3,10 @@ import { useHistory, useLocation } from 'react-router-dom';
 import GlobalState from './GlobalState';
 
 import useCookies, { setCookie } from '../hooks/useCookies';
+import { ACTIONS } from './GlobalState/reducers/global';
 
 export default function OAuth() {
-	const { isAuthed, setState } = useContext(GlobalState);
+	const { dispatch, state: { isAuthed } } = useContext(GlobalState);
 
 	const { access_token } = useCookies();
 	const history = useHistory();
@@ -25,12 +26,12 @@ export default function OAuth() {
 
 				setCookie('access_token', newToken, expires.toUTCString());
 
-				setState((prev) => ({ ...prev, isAuthed: true }));
+				dispatch({ payload: { isAuthed: true }, type: ACTIONS.SET_ISAUTHED });
 			}
 		}
 
 		history.push('/');
-	}, [access_token, history, isAuthed, location, setState]);
+	}, [access_token, dispatch, history, isAuthed, location]);
 
 	return null;
 }
