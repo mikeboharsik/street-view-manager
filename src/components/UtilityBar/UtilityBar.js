@@ -152,8 +152,8 @@ function getUpdateLevelHandler(state) {
 }
 
 function Functions() {
-	const { state } = useContext(GlobalState);
-	const { dispatch, uploads: { multiselect: { ids, isEnabled } } } = state;
+	const { dispatch, state } = useContext(GlobalState);
+	const { multiselect: { ids, isEnabled } } = selectUploads(state);
 
 	const functionClassName = `utilityBar-function-${isEnabled ? 'active' : 'inactive'}`;
 
