@@ -8,12 +8,15 @@ import { FEATURE_FLAGS, useFeatureFlags, useIsAuthed } from '../../hooks';
 
 import fetcher, { ACTIONS as FETCHER_ACTIONS } from '../../utilities/fetcher';
 
-import './UtilityBar.css';
 import { ACTIONS } from '../GlobalState/reducers/global';
+
+import selectUploads from '../GlobalState/selectors/selectUploads';
+
+import './UtilityBar.css';
 
 function getConnectHandler(state) {
 	return async function handleConnect() {
-		const { uploads: { multiselect: { ids }, photos } } = state;
+		const { multiselect: { ids }, photos } = selectUploads(state);
 
 		if (ids.length <= 0) {
 			return;
@@ -169,8 +172,10 @@ function Functions() {
 }
 
 export default function UtilityBar() {
-	const state = useContext(GlobalState);
-	const { dispatch, state: { uploads: { multiselect: { isEnabled: isMultiselectEnabled } }, showLoader } } = state;
+	const { dispatch, state } = useContext(GlobalState);
+	const { showLoader } = state;
+	const { multiselect: { isEnabled: isMultiselectEnabled } } = selectUploads(state);
+
 	const isAuthed = useIsAuthed();
 
 	const { pathname } = useLocation();

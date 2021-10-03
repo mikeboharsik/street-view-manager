@@ -56,6 +56,8 @@ export default function PhotoEditor({ match }) {
 			console.error(await res.json());
 			throw res.status;
 		}
+
+		dispatch({ payload: { updatedPhoto: options.body }, type: ACTIONS.UPDATE_PHOTO })
 	}
 
 	async function updateCoordinates() {

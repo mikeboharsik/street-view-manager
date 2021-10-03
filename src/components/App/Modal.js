@@ -5,7 +5,8 @@ import { ACTIONS } from '../GlobalState/reducers/global';
 import './Modal.css';
 
 export default function Modal() {
-	const { dispatch, state: { modal: { form } } } = useContext(GlobalState);
+	const { dispatch, state } = useContext(GlobalState);
+	const { modal: { form } } = state;
 
 	const id = form ? 'modal-overlay-container-active' : 'modal-overlay-container';
 

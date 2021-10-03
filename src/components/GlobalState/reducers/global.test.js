@@ -319,6 +319,16 @@ describe('uploads', () => {
 		});
 
 		describe('UPDATE_PHOTO', () => {
+			it('adds photo if photos are null', () => {
+				const testPhoto = { photoId: { id: 'photo1' } };
+
+				const action = { payload: { updatedPhoto: testPhoto }, type: ACTIONS.UPDATE_PHOTO };
+
+				const state = globalReducer(initialState, action);
+				const foundPhoto = state.uploads.photos[0];
+				expect(foundPhoto).toBe(testPhoto);
+			});
+
 			it('adds photo if it does not already exist', () => {
 				const initialPhotos = [{ photoId: { id: 'photo1' } }, { photoId: { id: 'photo2' } }];
 				const initState = { ...initialState, uploads: { ...initialState.uploads, photos: initialPhotos } };
