@@ -163,6 +163,7 @@ function Functions() {
 
 	return (
 		<div style={{ textAlign: 'center' }}>
+			<div style={{ borderTop: '1px solid black', marginBottom: '4px', marginTop: '8px' }} />
 			<div className={functionClassName} onClick={getConnectHandler(state)}>Con</div>
 			<div className={functionClassName} onClick={getUpdatePlacesHandler(state)}>Places</div>
 			<div className={functionClassName} onClick={getUpdateLevelHandler(state)}>Level</div>
