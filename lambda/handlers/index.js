@@ -8,8 +8,10 @@ const handlers = [ ...faviconHandlers, ...staticHandlers, ...defaultHandlers ];
 exports.handlers = handlers;
 
 exports.mapHandler = event => {
-    const { rawPath } = event;
-    const { method } = event.requestContext.http;
+    const {
+        rawPath,
+        requestContext: { http: { method } }
+    } = event;
     
     return handlers.find(h => {
         const methodMatch = h.method === method;
