@@ -1,16 +1,20 @@
 [CmdletBinding(SupportsShouldProcess = $true)]
 Param(
+	[switch] $OpenLogs,
+	[switch] $OpenStagingPath,
+
 	[switch] $Dev,
 	[switch] $KeepStagingFiles,
 	[switch] $SkipUpload,
-	[switch] $OpenStagingPath,
 	[switch] $TestsOnly
 )
+
+Write-Verbose "`$OpenLogs = $OpenLogs"
+Write-Verbose "`$OpenStagingPath = $OpenStagingPath"
 
 Write-Verbose "`$Dev = $Dev"
 Write-Verbose "`$KeepStagingFiles = $KeepStagingFiles"
 Write-Verbose "`$SkipUpload = $SkipUpload"
-Write-Verbose "`$OpenStagingPath = $OpenStagingPath"
 
 $configFilePath = "$PSScriptRoot\lambda.config.json"
 Write-Verbose "`$configFilePath = '$configFilePath'"
@@ -49,6 +53,11 @@ if (!$appKey) {
 $lambdaFunctionName = $config['lambdaFunctionName']
 if (!$lambdaFunctionName) {
 	throw "Configuration is missing required lambda function name"
+}
+
+if ($OpenLogs) {
+	Start-Process "https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/`$252Faws`$252Flambda`$252F$lambdaFunctionName"
+	return
 }
 
 try {
