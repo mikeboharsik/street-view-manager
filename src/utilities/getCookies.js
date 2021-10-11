@@ -14,7 +14,7 @@ export function getCookie(key) {
 		.reduce((acc, cookie) => { const [key, val] = cookie.split('='); acc[key] = val; return acc; }, {})[key];
 }
 
-export default function useCookies() {
+export default function getCookies() {
 	return document.cookie
 		.split(';')
 		.reduce((acc, cookie) => { const [key, val] = cookie.split('='); acc[key] = val; return acc; }, {});

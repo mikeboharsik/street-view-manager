@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 
 import GlobalState from '../GlobalState';
 import getPhotos from './getPhotos';
-import { FEATURE_FLAGS, useFeatureFlags, useIsAuthed } from '../../hooks';
+import { useIsAuthed } from '../../hooks';
+import { FEATURE_FLAGS, getFeatureFlags } from '../../utilities';
 
 import { PhotosNav, Thumbnails } from '.';
 
@@ -13,7 +14,7 @@ import selectFetcher from '../GlobalState/selectors/selectFetcher';
 import './Landing.css';
 
 function AddPhotosLink() {
-	const { isEnabled } = useFeatureFlags();
+	const { isEnabled } = getFeatureFlags();
 	const isAddPhotosEnabled = isEnabled(FEATURE_FLAGS.ADD_PHOTOS);
 
 	if (isAddPhotosEnabled) {

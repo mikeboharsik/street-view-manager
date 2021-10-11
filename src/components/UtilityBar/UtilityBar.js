@@ -4,7 +4,8 @@ import { useLocation } from 'react-router';
 
 import { Gear, X } from '../icons';
 import GlobalState from '../GlobalState';
-import { FEATURE_FLAGS, useFeatureFlags, useIsAuthed } from '../../hooks';
+import { useIsAuthed } from '../../hooks';
+import { FEATURE_FLAGS, getFeatureFlags } from '../../utilities';
 
 import fetcher, { ACTIONS as FETCHER_ACTIONS } from '../../utilities/fetcher';
 
@@ -180,7 +181,7 @@ export default function UtilityBar() {
 	const isAuthed = useIsAuthed();
 
 	const { pathname } = useLocation();
-	const { isEnabled: isFeatureEnabled } = useFeatureFlags();
+	const { isEnabled: isFeatureEnabled } = getFeatureFlags();
 
 	const isUtilityBarEnabled = isFeatureEnabled(FEATURE_FLAGS.UTILITY_BAR);
 

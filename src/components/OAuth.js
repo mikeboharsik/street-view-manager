@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import GlobalState from './GlobalState';
 
-import useCookies, { setCookie } from '../hooks/useCookies';
+import useCookies, { setCookie } from '../utilities/getCookies';
 import { ACTIONS } from './GlobalState/reducers/global';
 
 export default function OAuth() {

@@ -1,4 +1,4 @@
-import { getCookie } from "../hooks/useCookies";
+import { getCookie } from "./getCookies";
 
 export default function checkAccessToken() {
 	const access_token = getCookie('access_token');

@@ -1,4 +1,4 @@
-import { getCookie } from '../hooks/useCookies';
+import { getCookie } from './getCookies';
 
 const BASE_URL = 'https://streetviewpublish.googleapis.com';
 
