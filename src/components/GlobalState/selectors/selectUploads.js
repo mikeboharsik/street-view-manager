@@ -6,6 +6,10 @@ export function selectPhotos(state) {
 	return state?.uploads?.photos;
 }
 
+export function selectPlaces(state) {
+	return state?.uploads?.places;
+}
+
 export function selectThumbnails(state) {
 	return state?.uploads?.thumbnails;
 }
