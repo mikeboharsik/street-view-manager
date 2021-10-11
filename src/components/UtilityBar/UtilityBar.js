@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { toast } from 'react-toastify';
 import { useLocation } from 'react-router';
 
 import { Gear, X } from '../icons';
@@ -7,150 +6,15 @@ import GlobalState from '../GlobalState';
 import { useIsAuthed } from '../../hooks';
 import { FEATURE_FLAGS, getFeatureFlags } from '../../utilities';
 
-import fetcher, { ACTIONS as FETCHER_ACTIONS } from '../../utilities/fetcher';
-
 import { ACTIONS } from '../GlobalState/reducers/global';
 
 import selectUploads from '../GlobalState/selectors/selectUploads';
 
+import getConnectHandler from './getConnectHandler';
+import getUpdateLevelHandler from './getUpdateLevelHandler';
+import getUpdatePlacesHandler from './getUpdatePlacesHandler';
+
 import './UtilityBar.css';
-
-function getConnectHandler(state) {
-	return async function handleConnect() {
-		const { multiselect: { ids }, photos } = selectUploads(state);
-
-		if (ids.length <= 0) {
-			return;
-		}
-
-		const res = window.confirm(`Are you sure you want to connect the ${ids.length} photos you selected?`)
-		if (!res) {
-			return;
-		}
-
-		const photosToConnect = photos.filter((photo) => ids.includes(photo.photoId.id));
-		photosToConnect.sort((a, b) => a.captureTime < b.captureTime ? -1 : a.captureTime > b.captureTime ? 1 : 0);
-
-		photosToConnect.forEach((photo, idx, arr) => {
-			const newConnections = [];
-
-			const prevIdx = idx - 1;
-			const nextIdx = idx + 1;
-
-			if (prevIdx >= 0) {
-				const { photoId: { id } } = arr[prevIdx];
-				newConnections.push({ target: { id } });
-			}
-
-			if (nextIdx < arr.length) {
-				const { photoId: { id } } = arr[nextIdx];
-				newConnections.push({ target: { id } });
-			}
-
-			photo.connections = newConnections;
-		});
-
-		const body = {};
-
-		body.updatePhotoRequests = photosToConnect.map((photo) => ({
-			photo,
-			updateMask: 'connections',
-		}));
-
-		try {
-			const res = await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
-			if (!res.ok) {
-				toast('Update connections request was not OK', { type: 'error' });
-			} else {
-				toast('Update connections request succeeded', { type: 'success' });
-			}
-		} catch (e) {
-			toast(e.message, { type: 'error' });
-		}
-	}
-}
-
-function getUpdatePlacesHandler(state) {
-	return async function handleUpdatePlaces() {
-		const { uploads: { multiselect: { ids }, photos } } = state;
-
-		if (ids.length <= 0) {
-			return;
-		}
-
-		const res = window.prompt(`Enter the Place IDs to apply to the ${ids.length} selected photos`);
-		if (!res) {
-			console.log('cancel', res);
-			return;
-		}
-
-		const newPlaces = res.replace(' ', '').split(',').map((placeId) => ({ placeId }));
-
-		const photosToUpdate = photos.filter((photo) => ids.includes(photo.photoId.id));
-		photosToUpdate.forEach((photo) => {
-			photo.places = newPlaces;
-		});
-
-		const body = {};
-		body.updatePhotoRequests = photosToUpdate.map((photo) => ({
-			photo,
-			updateMask: 'places',
-		}));
-
-		try {
-			const res = await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
-			if (!res.ok) {
-				toast('Update places request was not OK', { type: 'error' });
-			} else {
-				toast('Update places request succeeded', { type: 'success' });
-			}
-		} catch (e) {
-			toast(e.message, { type: 'error' });
-		}
-	}	
-}
-
-function getUpdateLevelHandler(state) {
-	return async function handleUpdateLevel() {
-		const { uploads: { multiselect: { ids }, photos } } = state;
-
-		if (ids.length <= 0) {
-			return;
-		}
-
-		const levelNumber = window.prompt(`Enter the level number (starting at 0 for ground level) to apply to the ${ids.length} selected photos`);
-		if (!levelNumber) {
-			return;
-		}
-
-		const levelName = window.prompt(`Enter the level name (e.g. '1') to apply to the ${ids.length} selected photos`);
-		if (!levelName) {
-			return;
-		}
-
-		const photosToUpdate = photos.filter((photo) => ids.includes(photo.photoId.id));
-		photosToUpdate.forEach((photo) => {
-			photo.pose.level = { name: levelName, number: parseInt(levelNumber) };
-		});
-
-		const body = {};
-		body.updatePhotoRequests = photosToUpdate.map((photo) => ({
-			photo,
-			updateMask: 'pose.level',
-		}));
-
-		try {
-			const res = await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
-			if (!res.ok) {
-				toast('Update level request was not OK', { type: 'error' });
-			} else {
-				toast('Update level request succeeded', { type: 'success' });
-			}
-		} catch (e) {
-			toast(e.message, { type: 'error' });
-		}
-	}
-}
 
 function Functions() {
 	const { dispatch, state } = useContext(GlobalState);
