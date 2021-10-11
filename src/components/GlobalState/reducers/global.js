@@ -28,7 +28,17 @@ export default function globalReducer(state, action) {
 			case ACTIONS.ADD_PHOTOS: {
 				const { photos } = payload;
 
-				const newUploads = { ...state.uploads, photos: [...state.uploads.photos ?? [], ...photos] };
+				const newPhotos = [ ...state.uploads.photos ?? [] ];
+				photos.forEach((photoToAdd) => {
+					const existingPhotoIdx = newPhotos.findIndex((existingPhoto) => existingPhoto.photoId.id === photoToAdd.photoId.id);
+					if (existingPhotoIdx === -1) {
+						newPhotos.push(photoToAdd);
+					} else {
+						newPhotos[existingPhotoIdx] = photoToAdd;
+					}
+				});
+
+				const newUploads = { ...state.uploads, photos: newPhotos };
 
 				newUploads.places = newUploads.photos.reduce((acc, photo) => {
 					const { places } = photo;

@@ -241,7 +241,7 @@ describe('uploads', () => {
 
 	describe('photos', () => {
 		describe('ADD_PHOTOS', () => {
-			it('populates photos and places correctly', () => {
+			it('adds photos and places correctly', () => {
 				const place1 = { placeId: 'place1', name: 'Place 1', languageCode: 'en' };
 				const place4 = { placeId: 'place4', name: 'Place 4', languageCode: 'en' };
 
@@ -264,6 +264,25 @@ describe('uploads', () => {
 				const state2 = globalReducer(state1, action2);
 				expect(state2.uploads.photos).toEqual(newPhotosAll);
 				expect(state2.uploads.places[place4.placeId]).toEqual(place4);
+			});
+
+			it('does not add duplicate photos', () => {
+				const photo1 = { photoId: { id: 'photo1' } };
+				const photo2 = { photoId: { id: 'photo2' } };
+
+				const action = { payload: { photos: [photo1, photo2] }, type: ACTIONS.ADD_PHOTOS };
+
+				const state1 = globalReducer(initialState, action);
+				const photos1 = state1.uploads.photos;
+				expect(photos1.find((p) => p.photoId.id === photo1.photoId.id)).not.toBeUndefined();
+				expect(photos1.find((p) => p.photoId.id === photo2.photoId.id)).not.toBeUndefined();
+				expect(state1.uploads.photos).toHaveLength(2);
+
+				const state2 = globalReducer(state1, action);
+				const photos2 = state2.uploads.photos;
+				expect(photos2.find((p) => p.photoId.id === photo1.photoId.id)).not.toBeUndefined();
+				expect(photos2.find((p) => p.photoId.id === photo2.photoId.id)).not.toBeUndefined();
+				expect(state2.uploads.photos).toHaveLength(2);
 			});
 		});
 
