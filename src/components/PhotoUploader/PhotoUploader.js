@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import fetcher, { ACTIONS } from '../../utilities/fetcher';
+import { toast } from 'react-toastify';
+
+import { fetcher, ACTIONS } from '../../utilities';
 
 const UPLOAD_STATUS = {
 	PENDING: 'PENDING',
@@ -34,11 +36,17 @@ export default function PhotoUploader() {
 		setUploadProgress(newUploadProgress);
 
 		newUploadProgress.forEach(async (upload) => {
-			const { file } = upload;
+			try {
+				const { file } = upload;
 
-			const { uploadUrl } = await fetcher(ACTIONS.CREATE_UPLOAD_SESSION).then((res) => res.json());
+				const { uploadUrl } = await fetcher(ACTIONS.CREATE_UPLOAD_SESSION).then((res) => res.json());
 
-			await fetcher(ACTIONS.UPLOAD_PHOTO, { body: await file.arrayBuffer(), uploadUrl });
+				await fetcher(ACTIONS.UPLOAD_PHOTO, { body: await file.arrayBuffer(), uploadUrl });
+			} catch(e) {
+				console.error('Encountered unhandled exception when uploading new photo:', e);
+
+				toast(e.message, { type: 'error' });
+			}
 		});
 	}
 
