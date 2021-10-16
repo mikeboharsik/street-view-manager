@@ -4,6 +4,7 @@ export const ACTIONS = {
 	ADD_PHOTOS: 'ADD_PHOTOS',
 	CLEAR_MULTISELECT: 'CLEAR_MULTISELECT',
 	DECREMENT_CURRENTPAGE: 'DECREMENT_CURRENTPAGE',
+	DELETE_PHOTOS: 'DELETE_PHOTOS',
 	INCREMENT_CURRENTPAGE: 'INCREMENT_CURRENTPAGE',
 	SET_CURRENTPAGE: 'SET_CURRENTPAGE',
 	SET_CURRENTPAGE_FIRST: 'SET_CURRENTPAGE_FIRST',
@@ -53,12 +54,14 @@ export default function globalReducer(state, action) {
 
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.CLEAR_MULTISELECT: {
 				const newMultiselect = { ...state.uploads.multiselect, ids: [] };
 				const newUploads = { ...state.uploads, multiselect: newMultiselect };
 
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.DECREMENT_CURRENTPAGE: {
 				const { uploads: { currentPage: oldCurrentPage } } = state;
 
@@ -70,6 +73,31 @@ export default function globalReducer(state, action) {
 
 				return { ...state, uploads: newUploads };
 			}
+
+			case ACTIONS.DELETE_PHOTOS: {
+				const { photoIds } = payload;
+				
+				if (photoIds.length <= 0) {
+					console.error('Unexpectedly did not update state', action);
+					return state;
+				}
+
+				const newPhotos = state.uploads.photos.filter((photo) => {
+					const { photoId: { id } } = photo;
+
+					return !photoIds.includes(id);
+				});
+
+				if (newPhotos.length === state.uploads.photos.length) {
+					console.error('Unexpectedly did not update state', action);
+					return state;
+				}
+
+				const newUploads = { ...state.uploads, photos: newPhotos };
+
+				return { ...state, uploads: newUploads };
+			}
+
 			case ACTIONS.INCREMENT_CURRENTPAGE: {
 				const { uploads: { currentPage: oldCurrentPage, photos, photosPerPage } } = state;
 				const pageCount = Math.ceil(photos.length / photosPerPage);
@@ -82,6 +110,7 @@ export default function globalReducer(state, action) {
 
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.SET_CURRENTPAGE: {
 				const { uploads: { currentPage: oldCurrentPage, photos, photosPerPage } } = state;
 				const { currentPage } = payload;
@@ -102,10 +131,12 @@ export default function globalReducer(state, action) {
 				const newUploads = { ...state.uploads, currentPage: newCurrentPage };
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.SET_CURRENTPAGE_FIRST: {
 				const newUploads = { ...state.uploads, currentPage: 0 };
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.SET_CURRENTPAGE_LAST: {
 				const { uploads: { photos, photosPerPage } } = state;
 
@@ -114,6 +145,7 @@ export default function globalReducer(state, action) {
 				const newUploads = { ...state.uploads, currentPage: pageCount - 1 };
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.SET_FETCHER: {
 				const { inProgress, type } = payload;
 
@@ -121,6 +153,7 @@ export default function globalReducer(state, action) {
 
 				return { ...state, fetcher: newFetcher };
 			}
+
 			case ACTIONS.SET_GITHASH: {
 				const { gitHash } = payload;
 
@@ -128,11 +161,13 @@ export default function globalReducer(state, action) {
 
 				return { ...state, meta: newMeta };
 			}
+
 			case ACTIONS.SET_ISAUTHED: {
 				const { isAuthed } = payload;
 
 				return { ...state, isAuthed };
 			}
+
 			case ACTIONS.SET_MODAL: {
 				const { form } = payload;
 
@@ -140,11 +175,13 @@ export default function globalReducer(state, action) {
 
 				return { ...state, modal: newModal };
 			}
+
 			case ACTIONS.SET_SHOWLOADER: {
 				const { showLoader } = payload;
 
 				return { ...state, showLoader };
 			}
+
 			case ACTIONS.SET_THUMBNAIL_DATA: {
 				const { dataUrl, photoId } = payload;
 
@@ -153,6 +190,7 @@ export default function globalReducer(state, action) {
 
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.SORT_PHOTOS: {
 				const { reverse, sortFunc, sortProp } = payload;
 
@@ -171,6 +209,7 @@ export default function globalReducer(state, action) {
 
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.TOGGLE_MULTISELECT: {
 				const { uploads: { multiselect: { isEnabled } } } = state;
 
@@ -179,6 +218,7 @@ export default function globalReducer(state, action) {
 
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.TOGGLE_MULTISELECT_ID: {
 				const { uploads: { multiselect: { ids } } } = state;
 				const { photoId } = payload;
@@ -195,6 +235,7 @@ export default function globalReducer(state, action) {
 				const newUploads = { ...state.uploads, multiselect: newMultiselect };
 				return { ...state, uploads: newUploads };
 			}
+
 			case ACTIONS.UPDATE_PHOTO: {
 				const { uploads: { photos } } = state;
 				const { updatedPhoto } = payload;
@@ -211,6 +252,7 @@ export default function globalReducer(state, action) {
 				const newUploads = { ...state.uploads, photos: newPhotos };
 				return { ...state, uploads: newUploads };
 			}
+
 			default: {
 				return state;
 			}
@@ -218,5 +260,7 @@ export default function globalReducer(state, action) {
 	} catch(e) {
 		console.error(e);
 		toast('Dispatch failed, check log for details');
+
+		return state;
 	}
 };

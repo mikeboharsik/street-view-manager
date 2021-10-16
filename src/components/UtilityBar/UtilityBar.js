@@ -8,9 +8,10 @@ import { FEATURE_FLAGS, getFeatureFlags } from '../../utilities';
 
 import { ACTIONS } from '../GlobalState/reducers/global';
 
-import selectUploads from '../GlobalState/selectors/selectUploads';
+import { selectMultiselect } from '../GlobalState/selectors/selectUploads';
 
 import getConnectHandler from './getConnectHandler';
+import getDeleteHandler from './getDeleteHandler';
 import getUpdateLevelHandler from './getUpdateLevelHandler';
 import getUpdatePlacesHandler from './getUpdatePlacesHandler';
 
@@ -18,7 +19,7 @@ import './UtilityBar.css';
 
 function Functions() {
 	const { dispatch, state } = useContext(GlobalState);
-	const { multiselect: { ids, isEnabled } } = selectUploads(state);
+	const { ids, isEnabled } = selectMultiselect(state);
 
 	const functionClassName = `utilityBar-function-${isEnabled ? 'active' : 'inactive'}`;
 
@@ -32,6 +33,7 @@ function Functions() {
 			<div className={functionClassName} onClick={getConnectHandler(state)}>Con</div>
 			<div className={functionClassName} onClick={getUpdatePlacesHandler(state)}>Places</div>
 			<div className={functionClassName} onClick={getUpdateLevelHandler(state)}>Level</div>
+			<div className={functionClassName} onClick={getDeleteHandler(dispatch, state)}>Delete</div>
 			<div className={functionClassName} onClick={() => dispatch({ type: ACTIONS.CLEAR_MULTISELECT })}>{`Clear (${ids.length})`}</div>
 		</div>
 	);
@@ -40,7 +42,7 @@ function Functions() {
 export default function UtilityBar() {
 	const { dispatch, state } = useContext(GlobalState);
 	const { showLoader } = state;
-	const { multiselect: { isEnabled: isMultiselectEnabled } } = selectUploads(state);
+	const { isEnabled: isMultiselectEnabled } = selectMultiselect(state);
 
 	const isAuthed = useIsAuthed();
 

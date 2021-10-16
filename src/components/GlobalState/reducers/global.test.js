@@ -286,6 +286,22 @@ describe('uploads', () => {
 			});
 		});
 
+		describe('DELETE_PHOTOS', () => {
+			it('removes photos whose ids match those provided in the action', () => {
+				const action = { payload: { photoIds: ['photo1', 'photo3'] }, type: ACTIONS.DELETE_PHOTOS };
+				const initPhotos = [
+					{ photoId: { id: 'photo1' } },
+					{ photoId: { id: 'photo2' } },
+					{ photoId: { id: 'photo3' } },
+				];
+				const initState = { ...initialState, uploads: { ...initialState.uploads, photos: initPhotos } };
+				const expectedPhotos = [{ photoId: { id: 'photo2' } }];
+
+				const state = globalReducer(initState, action);
+				expect(state.uploads.photos).toEqual(expectedPhotos);
+			});
+		});
+
 		describe('SORT_PHOTOS', () => {
 			it('sorts photos according to the provided function', () => {
 				const testSortFunc1 = (a, b) => a.captureTime < b.captureTime ? -1 : a.captureTime > b.captureTime ? 1 : 0;
