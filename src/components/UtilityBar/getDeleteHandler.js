@@ -38,7 +38,11 @@ export default function getDeleteHandler(dispatch, state) {
 		const body = { photoIds: ids };
 
 		try {
-			const { status: statuses } = await fetcher(FETCHER_ACTIONS.DELETE_PHOTOS, { body }).then((res) => res.json());
+			const action = FETCHER_ACTIONS.DELETE_PHOTOS;
+			const options = { body };
+
+			const res = await fetcher(action, options).then((res) => res.json());
+			const { status: statuses } = res;
 
 			const idsToRemove = statuses.reduce((acc, status, idx) => {
 				const { code } = status;
@@ -66,6 +70,7 @@ export default function getDeleteHandler(dispatch, state) {
 				dispatch({ payload: { photoIds: idsToRemove }, type: ACTIONS.DELETE_PHOTOS });
 			}
 		} catch (e) {
+			console.error({ e });
 			toast(e.message, { autoClose: false, type: 'error' });
 		}
 	}
