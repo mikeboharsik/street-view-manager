@@ -5,6 +5,7 @@ Param(
 
 	[switch] $Dev,
 	[switch] $KeepStagingFiles,
+	[switch] $SkipAppKey,
 	[switch] $SkipUpload,
 	[switch] $TestsOnly
 )
@@ -46,7 +47,7 @@ if (!$appClientId) {
 }
 
 $appKey = $config['key']
-if (!$appKey) {
+if (!$appKey -and !$SkipAppKey) {
 	throw "Configuration has an invalid key: '$appKey'"
 }
 
@@ -80,7 +81,7 @@ try {
 	$env:REACT_APP_KEY = $appKey
 	Write-Verbose "`$env:REACT_APP_KEY = '$env:REACT_APP_KEY'"
 
-	yarn test --watchAll=false
+	yarn test --watchAll=false --verbose
 	if (!$?) {
 		Write-Error "Unit tests failed"
 		return 1
