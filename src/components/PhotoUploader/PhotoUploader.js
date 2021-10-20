@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 
 import { fetcher, ACTIONS } from '../../utilities';
 
+import './PhotoUploader.css';
+
 const UPLOAD_STATUS = {
 	PENDING: 'PENDING',
 	IN_PROGRESS: 'IN_PROGRESS',
@@ -14,9 +16,7 @@ export default function PhotoUploader() {
 	const [files, setFiles] = useState(null);
 	const [uploadProgress, setUploadProgress] = useState(null);
 
-	useEffect(() => {
-		console.log({ uploadProgress });
-	}, [uploadProgress]);
+	useEffect(() => {}, [uploadProgress]);
 
 	function handleFilesChange(e) {
 		const newFiles = Array.from(e.target.files);
@@ -61,10 +61,10 @@ export default function PhotoUploader() {
 	function ImagePreviews() {
 		if (files?.length > 0) {
 			return files.map((file) => (
-				<div key={file.name} style={{ display: 'flex', margin: 0, padding: 0, position: 'relative' }}>
-					<img alt={file.name} src={file.localUrl} style={{ maxWidth: '300px' }} title={file.name} />
-					<div style={{ alignItems: 'center', display: 'flex', height: '100%', justifyContent: 'center', position: 'absolute', width: '100%' }}>
-						<span style={{ color: 'white', filter: 'drop-shadow(0px 0px 1px black) drop-shadow(0px 0px 1px black) drop-shadow(0px 0px 1px black)', userSelect: 'none' }}>
+				<div key={file.name} className="uploader-image-preview-container">
+					<img alt={file.name} className="uploader-image-preview-image" src={file.localUrl} title={file.name} />
+					<div className="uploader-image-preview-container-image-overlay">
+						<span className="uploader-image-preview-container-image-overlay-filename">
 							{file.name}
 						</span>
 					</div>
@@ -76,7 +76,7 @@ export default function PhotoUploader() {
 	}
 
 	return (
-		<div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+		<div id="uploader-container">
 			<input
 				accept=".jpg"
 				multiple="multiple"
