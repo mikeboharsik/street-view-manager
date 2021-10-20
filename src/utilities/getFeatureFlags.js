@@ -1,4 +1,4 @@
-const initFeatureFlags = {
+export const initFeatureFlags = {
 	ADD_PHOTOS: {
 		isEnabled: false,
 	},
@@ -9,7 +9,15 @@ const initFeatureFlags = {
 
 export const FEATURE_FLAGS = Object.keys(initFeatureFlags).reduce((a, c) => { a[c] = c.toString(); return a; }, {});
 
-export default function useFeatureFlags() {
+export function deserialize() {
+	return JSON.parse(window.localStorage.getItem('featureFlags')) ?? {};
+}
+
+export function serialize(featureFlags) {
+	window.localStorage.setItem('featureFlags', JSON.stringify(featureFlags));
+}
+
+export default function getFeatureFlags() {
 	function clear(){
 		window.localStorage.setItem('featureFlags', JSON.stringify(initFeatureFlags));
 	};
@@ -20,28 +28,33 @@ export default function useFeatureFlags() {
 	}
 
 	function get(name){
-		const featureFlags = JSON.parse(window.localStorage.getItem('featureFlags'));
+		const featureFlags = deserialize();
+
+		if (!name) {
+			return featureFlags;
+		}
+
 		return featureFlags[name];
 	};
 
 	function remove(name){
-		const featureFlags = JSON.parse(window.localStorage.getItem('featureFlags'));
+		const featureFlags = deserialize();
 		delete featureFlags[name];
-		window.localStorage.setItem('featureFlags', JSON.stringify(featureFlags));
+		serialize(featureFlags);
 	};
 
 	function set(name, isEnabled){
-		const featureFlags = JSON.parse(window.localStorage.getItem('featureFlags'));
+		const featureFlags = deserialize();
 		featureFlags[name] = { isEnabled };
-		window.localStorage.setItem('featureFlags', JSON.stringify(featureFlags));
+		serialize(featureFlags);
 	};
 
 	if (!window.localStorage.getItem('featureFlags')) {
-		window.localStorage.setItem('featureFlags', JSON.stringify(initFeatureFlags));
+		serialize(initFeatureFlags);
 	} else {
-		let featureFlags = JSON.parse(window.localStorage.getItem('featureFlags'));
+		let featureFlags = deserialize();
 		const newFeatureFlags = { ...initFeatureFlags, ...featureFlags };
-		window.localStorage.setItem('featureFlags', JSON.stringify(newFeatureFlags));
+		serialize(newFeatureFlags);
 	}
 
 	return { clear, get, isEnabled, remove, set };
