@@ -9,10 +9,7 @@ describe('Landing page', () => {
 
 		cy.intercept('GET', 'https://streetviewpublish.googleapis.com/v1/photos*', {
 			statusCode: 200,
-			body: {
-				nextPageToken: null,
-				photos: [],
-			},
+			body: {},
 		}).as('photos');
 	});
 

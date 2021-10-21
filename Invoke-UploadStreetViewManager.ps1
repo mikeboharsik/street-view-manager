@@ -87,6 +87,12 @@ try {
 		return 1
 	}
 
+	yarn cypress run
+	if (!$?) {
+		Write-Error "Integration tests failed"
+		return 1
+	}
+
 	if ($TestsOnly) {
 		return
 	}

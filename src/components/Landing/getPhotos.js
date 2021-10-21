@@ -12,7 +12,7 @@ export default async function getPhotos(dispatch) {
 
 			pageToken = res.nextPageToken;
 
-			dispatch({ payload: { photos: res.photos }, type: ACTIONS.ADD_PHOTOS });
+			dispatch({ payload: { photos: res.photos ?? [] }, type: ACTIONS.ADD_PHOTOS });
 		} while(pageToken);
 	} catch(e) {
 		console.error(e);
