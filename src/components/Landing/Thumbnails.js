@@ -1,13 +1,17 @@
 import { useContext, useEffect, useState } from 'react';
 
 import GlobalState from '../GlobalState';
+import { selectFetcher, selectUploads } from '../GlobalState/selectors';
 
 import Thumbnail from './Thumbnail';
 
 import './Thumbnails.css';
 
 export default function Thumbnails() {
-	const { state: { fetcher: { photos: { inProgress } }, uploads: { currentPage, photos, photosPerPage } } } = useContext(GlobalState);
+	const { state } = useContext(GlobalState);
+
+	const { inProgress } = selectFetcher(state, 'photos');
+	const { currentPage, photos, photosPerPage } = selectUploads(state);
 
 	const [renderedPhotos, setRenderedPhotos] = useState(null);
 
@@ -19,7 +23,7 @@ export default function Thumbnails() {
 		}
 	}, [currentPage, photos, photosPerPage]);
 
-	if (photos.length <= 0 && inProgress === false) {
+	if (photos?.length <= 0 && inProgress === false) {
 		return (
 			<div>
 				No photos. Go ahead and upload some.

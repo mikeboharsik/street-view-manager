@@ -16,7 +16,7 @@ const initialState = {
 	modal: {
 		form: null,
 	},
-	isAuthed: false,
+	isAuthed: null,
 	showLoader: false,
 	uploads: {
 		currentPage: 0,

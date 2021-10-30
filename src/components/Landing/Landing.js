@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import GlobalState from '../GlobalState';
 import getPhotos from './getPhotos';
 import { useIsAuthed } from '../../hooks';
-import { FEATURE_FLAGS, getFeatureFlags } from '../../utilities';
+import { FEATURE_FLAGS, getAuthUri, getFeatureFlags } from '../../utilities';
 
 import { PhotosNav, Thumbnails } from '.';
 
@@ -44,8 +44,25 @@ export default function Landing() {
 		}
 	}, [dispatch, inProgress, isAuthed, photos]);
 
-	if (!isAuthed || !photos || inProgress) {
+	if (isAuthed === null || inProgress === true) {
 		return null;
+	}
+
+	if (isAuthed === false) {
+		const authUri = getAuthUri();
+
+		return (
+			<>
+				<div>
+					Use of this application requires that you grant access to the Street View content associated with your Google account
+				</div>
+				<div>
+					<a href={authUri}>
+						Click here to grant access
+					</a>
+				</div>
+			</>
+		);
 	}
 
 	return (

@@ -7,7 +7,7 @@ import { getFeatureFlags } from '../../utilities';
 
 import { Landing, OAuth, PhotoEditor, PhotoUploader, UtilityBar } from '..';
 
-import { Auth, Footer, Loader, Modal } from '.';
+import { Footer, Loader, Modal } from '.';
 
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css'
@@ -21,7 +21,6 @@ export default function App() {
     <div className="App">
       <Router>
         <GlobalStateProvider>
-          <Auth />
           <ToastContainer position={'top-center'} theme={'dark'} />
           <Loader />
           <Footer />
