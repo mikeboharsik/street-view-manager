@@ -5,12 +5,13 @@ import { ACTIONS } from '../GlobalState/reducers/global';
 import './PhotosNav.css'
 
 export default function PhotosNav() {
-	function NavButton({ char, isHidden, onClick }) {
+	function NavButton({ char, id, isHidden, onClick }) {
 		const cursor = isHidden ? 'default' : 'pointer';
 		const opacity = isHidden ? 0 : 1;
 
 		return (
 			<span
+				id={id}
 				onClick={() => { if (isHidden) return; onClick(); }}
 				style={{ cursor, paddingLeft: '4px', paddingRight: '4px', opacity }}
 			>
@@ -63,11 +64,11 @@ export default function PhotosNav() {
 
 	return (
 		<div id="photos-nav-container">
-			<NavButton char={'<<'} isHidden={hideLeftLeft} onClick={leftLeftHandler} />
-			<NavButton char={'<'} isHidden={hideLeft} onClick={leftHandler} />
+			<NavButton char={'<<'} id="navigateLeftLeft" isHidden={hideLeftLeft} onClick={leftLeftHandler} />
+			<NavButton char={'<'} id="navigateLeft" isHidden={hideLeft} onClick={leftHandler} />
 			<PageIndicator currentPageNav={currentPageNav} pageCountNav={pageCount} photos={photos} />
-			<NavButton char={'>'} isHidden={hideRight} onClick={rightHandler} />
-			<NavButton char={'>>'} isHidden={hideRightRight} onClick={rightRightHandler} />
+			<NavButton char={'>'} id="navigateRight" isHidden={hideRight} onClick={rightHandler} />
+			<NavButton char={'>>'} id="navigateRightRight" isHidden={hideRightRight} onClick={rightRightHandler} />
 		</div>
 	);
 }
