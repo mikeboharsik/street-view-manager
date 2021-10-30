@@ -25,7 +25,7 @@ export default function Thumbnail({ hide, photo }) {
 	const thumbnail = thumbnails[photoId];
 
 	useEffect(() => {
-		if (!thumbnail) {
+		if (!thumbnail && thumbnailUrl) {
 			getThumbnailData(dispatch, photoId, thumbnailUrl);
 		}
 	}, [dispatch, photoId, thumbnail, thumbnailUrl]);
