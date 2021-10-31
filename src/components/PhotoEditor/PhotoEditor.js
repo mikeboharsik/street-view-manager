@@ -30,6 +30,14 @@ export default function PhotoEditor({ match }) {
 
 	const [curPhoto, setCurPhoto] = useState(null);
 
+	const { location: { pathname } } = history;
+	useEffect(() => {
+		[coordinatesInput, altitudeInput, placesInput, connectionsInput]
+			.forEach((i) => {
+				if (i.current) i.current.value = '';
+			});
+	}, [pathname]);
+
 	useEffect(() => {
 		const photo = photos?.find(p => p?.photoId?.id === photoId);
 		if (photo) {
