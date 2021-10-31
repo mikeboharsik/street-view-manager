@@ -58,7 +58,7 @@ export default function getDeleteHandler(dispatch, state) {
 			}, []);
 
 			const wasPartialSuccess = idsToRemove.length > 0;
-			const wasTotalSuccess = idsToRemove === ids.length;
+			const wasTotalSuccess = idsToRemove.length === ids.length;
 
 			if (!wasTotalSuccess) {
 				toast('Failed to delete requested photos', { autoClose: false, type: 'error' });
@@ -68,6 +68,10 @@ export default function getDeleteHandler(dispatch, state) {
 
 			if (wasPartialSuccess) {
 				dispatch({ payload: { photoIds: idsToRemove }, type: ACTIONS.DELETE_PHOTOS });
+			}
+
+			if (wasTotalSuccess) {
+				toast(`Successfully deleted ${idsToRemove.length} photos`, { type: 'success' });
 			}
 		} catch (e) {
 			console.error({ e });
