@@ -11,7 +11,9 @@ describe('Landing page', () => {
 			cy.get('[data-cy="link-grant-access"]').should('have.attr', 'href');
 
 			cy.get('#loader-container').should('not.exist');
+
 			cy.get('#footer-container').should('exist');
+			cy.get('[data-cy="logout-button"]').should('not.exist');
 		});
 	});
 
@@ -48,7 +50,9 @@ describe('Landing page', () => {
 				cy.contains('No photos. Go ahead and upload some.');
 	
 				cy.get('.header').should('exist');
+
 				cy.get('#footer-container').should('exist');
+				cy.get('[data-cy="logout-button"]').should('exist');
 		
 				cy.get('#thumbnails-container').should('not.exist');
 				cy.get('#photos-nav-container').should('not.exist');
@@ -100,7 +104,9 @@ describe('Landing page', () => {
 				cy.contains('1 / 1');
 		
 				cy.get('.header').should('exist');
+
 				cy.get('#footer-container').should('exist');
+				cy.get('[data-cy="logout-button"]').should('exist');
 		
 				cy.get('#thumbnails-container').should('exist');
 				cy.get('#photos-nav-container').should('exist');
