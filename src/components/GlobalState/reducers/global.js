@@ -237,11 +237,10 @@ export default function globalReducer(state, action) {
 			}
 
 			case ACTIONS.UPDATE_PHOTO: {
-				const { uploads: { photos } } = state;
+				const { uploads: { photos, places } } = state;
 				const { updatedPhoto } = payload;
 
 				const newPhotos = photos ? [ ...photos ] : [];
-
 				const photoIdx = newPhotos.findIndex((photo) => photo.photoId.id === updatedPhoto.photoId.id);
 				if (photoIdx === -1) {
 					newPhotos.push(updatedPhoto);
@@ -249,7 +248,15 @@ export default function globalReducer(state, action) {
 					newPhotos[photoIdx] = updatedPhoto;
 				}
 
-				const newUploads = { ...state.uploads, photos: newPhotos };
+				let newPlaces = places;
+				if (updatedPhoto.places) {
+					newPlaces = { ...places };
+					updatedPhoto.places.forEach((place) => {
+						newPlaces[place.placeId] = place;
+					});
+				}
+
+				const newUploads = { ...state.uploads, photos: newPhotos, places: newPlaces };
 				return { ...state, uploads: newUploads };
 			}
 

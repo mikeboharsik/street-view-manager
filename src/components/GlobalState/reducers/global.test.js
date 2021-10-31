@@ -355,13 +355,21 @@ describe('uploads', () => {
 
 		describe('UPDATE_PHOTO', () => {
 			it('adds photo if photos are null', () => {
-				const testPhoto = { photoId: { id: 'photo1' } };
+				const testPhoto = { photoId: { id: 'photo1' }, places: [{ name: 'testPlace' }] };
 
-				const action = { payload: { updatedPhoto: testPhoto }, type: ACTIONS.UPDATE_PHOTO };
+				const action = {
+					payload: {
+						updatedPhoto: testPhoto
+					},
+					type: ACTIONS.UPDATE_PHOTO,
+				};
 
 				const state = globalReducer(initialState, action);
+
 				const foundPhoto = state.uploads.photos[0];
 				expect(foundPhoto).toBe(testPhoto);
+
+				expect(Object.keys(state.uploads.places).length).toBeGreaterThan(0);
 			});
 
 			it('adds photo if it does not already exist', () => {
@@ -369,7 +377,14 @@ describe('uploads', () => {
 				const initState = { ...initialState, uploads: { ...initialState.uploads, photos: initialPhotos } };
 				const testPhotoId = 'photo3';
 
-				const action = { payload: { updatedPhoto: { photoId: { id: testPhotoId } }}, type: ACTIONS.UPDATE_PHOTO };
+				const action = {
+					payload: {
+						updatedPhoto: {
+							photoId: { id: testPhotoId }
+						},
+					},
+					type: ACTIONS.UPDATE_PHOTO,
+				};
 
 				expect(initState.uploads.photos).toHaveLength(2);
 
@@ -386,7 +401,15 @@ describe('uploads', () => {
 				const testConnections = ['connection 1', 'connection 2'];
 				const testPhotoId = 'photo2';
 
-				const action = { payload: { updatedPhoto: { connections: testConnections, photoId: { id: testPhotoId } }}, type: ACTIONS.UPDATE_PHOTO };
+				const action = {
+					payload: {
+						updatedPhoto: {
+							connections: testConnections,
+							photoId: { id: testPhotoId },
+						},
+					},
+					type: ACTIONS.UPDATE_PHOTO,
+				};
 
 				const foundPhotoInit = initState.uploads.photos.find((photo) => photo.photoId.id === testPhotoId);
 				expect(initState.uploads.photos).toHaveLength(2);
