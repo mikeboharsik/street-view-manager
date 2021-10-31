@@ -53,12 +53,13 @@ export default function Landing() {
 
 		return (
 			<>
-				<div>
-					Use of this application requires that you grant access to the Street View content associated with your Google account
+				<div style={{ width: '25%', textAlign: 'center' }}>
+					This application needs your permission to access the Street View content associated with your Google account
 				</div>
+				<br />
 				<div>
 					<a data-cy="link-grant-access" href={authUri}>
-						Click here to grant access
+						Click here to grant permission
 					</a>
 				</div>
 			</>
