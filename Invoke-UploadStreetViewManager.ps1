@@ -87,7 +87,7 @@ try {
 		return 1
 	}
 
-	yarn cypress run
+	yarn cypress run --browser chrome
 	if (!$?) {
 		Write-Error "Integration tests failed"
 		return 1
