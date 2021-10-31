@@ -57,7 +57,7 @@ export default function Landing() {
 					Use of this application requires that you grant access to the Street View content associated with your Google account
 				</div>
 				<div>
-					<a href={authUri}>
+					<a data-cy="link-grant-access" href={authUri}>
 						Click here to grant access
 					</a>
 				</div>
