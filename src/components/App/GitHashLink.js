@@ -22,11 +22,7 @@ export default function GitHashLink() {
 	}
 
 	return (
-		<span
-			onClick={onClickHandler}
-			style={{ cursor: 'pointer', position: 'absolute', right: 0 }}
-			title={gitHash}
-		>
+		<span id="footer-githash-link" onClick={onClickHandler} title={gitHash}>
 			ⓘ
 		</span>
 	);

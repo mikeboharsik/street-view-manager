@@ -16,6 +16,12 @@
 	user-select: none;
 }
 
+#footer-githash-link {
+	cursor: pointer;
+	position: absolute;
+	right: 0;
+}
+
 #footer-links-container {
 	display: flex;
 	justify-content: center;
