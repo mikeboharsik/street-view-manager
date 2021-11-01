@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 
 import { fetcher, ACTIONS } from '../../utilities';
 
+import PanoramaViewer from '../PanoramaViewer/PanoramaViewer';
+
 import './PhotoUploader.css';
 
 const UPLOAD_STATUS = {
@@ -88,6 +90,8 @@ export default function PhotoUploader() {
 			<ImagePreviews />
 
 			<UploadButton />
+
+			<PanoramaViewer image={files?.[0]?.localUrl} />
 		</div>
 	);
 }
