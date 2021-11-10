@@ -4,9 +4,7 @@ import useGitHash from './useGitHash';
 
 export default function GitHashLink() {
 	const gitHash = useGitHash();
-	if (!gitHash) {
-		return null;
-	}
+	const visibilityClass = gitHash ? 'visible' : 'invisible';
 
 	async function onClickHandler(e) {
 		if (gitHash) {
@@ -22,7 +20,12 @@ export default function GitHashLink() {
 	}
 
 	return (
-		<span id="footer-githash-link" onClick={onClickHandler} title={gitHash}>
+		<span
+			class={visibilityClass}
+			id="footer-githash-link"
+			onClick={onClickHandler}
+			title={gitHash}
+		>
 			ⓘ
 		</span>
 	);

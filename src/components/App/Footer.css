@@ -20,6 +20,7 @@
 	cursor: pointer;
 	position: absolute;
 	right: 0;
+	transition: 0.3s;
 }
 
 #footer-links-container {
