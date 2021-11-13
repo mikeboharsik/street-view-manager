@@ -16,8 +16,8 @@ export default function LogoutButton() {
 		return (
 			<span
 				data-cy="logout-button"
+				id="logout-button"
 				onClick={clickHandler}
-				style={{ cursor: 'pointer', left: 0, position: 'absolute' }}
 				title="Log Out"
 			>
 				<LogoutIcon />

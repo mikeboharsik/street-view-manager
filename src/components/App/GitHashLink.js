@@ -21,7 +21,7 @@ export default function GitHashLink() {
 
 	return (
 		<span
-			class={visibilityClass}
+			className={visibilityClass}
 			id="footer-githash-link"
 			onClick={onClickHandler}
 			title={gitHash}

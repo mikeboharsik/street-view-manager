@@ -31,3 +31,9 @@
 #footer-links-container > span {
 	padding: 0px 8px;
 }
+
+#logout-button {
+	cursor: pointer;
+	left: 0;
+	position: absolute;
+}
