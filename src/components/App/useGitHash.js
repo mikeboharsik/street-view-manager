@@ -19,9 +19,9 @@ export default function useGitHash() {
 				try {
 					dispatch({ payload: { inProgress: true, type: 'gitHash'}, type: ACTIONS.SET_FETCHER });
 			
-					const res = await fetch('/git-version.txt').then(res => res.text());
+					const res = await fetch('/static/version.json').then(res => res.json());
 			
-					dispatch({ payload: { gitHash: res }, type: ACTIONS.SET_GITHASH });
+					dispatch({ payload: { gitHash: res.client }, type: ACTIONS.SET_GITHASH });
 				} catch(e) {
 					console.error(e);
 			

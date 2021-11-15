@@ -26,7 +26,7 @@ describe('Landing page', () => {
 			beforeEach(() => {
 				cy.setCookie('access_token', 'TEST_ACCESS_TOKEN');
 		
-				cy.intercept('GET', 'http://localhost:3000/git-version.txt', {
+				cy.intercept('GET', 'http://localhost:3000/static/version.json', {
 					statusCode: 200,
 					body: 'some git hash',
 				}).as('gitVersion');
@@ -67,7 +67,7 @@ describe('Landing page', () => {
 			beforeEach(() => {
 				cy.setCookie('access_token', 'TEST_ACCESS_TOKEN');
 		
-				cy.intercept('GET', 'http://localhost:3000/git-version.txt', {
+				cy.intercept('GET', 'http://localhost:3000/static/version.json', {
 					statusCode: 200,
 					body: 'some git hash',
 				}).as('gitVersion');
