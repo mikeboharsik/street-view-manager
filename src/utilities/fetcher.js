@@ -15,7 +15,7 @@ export const ACTIONS = {
 	UPLOAD_PHOTO: 'UPLOAD_PHOTO',
 };
 
-const URIS = {
+export const URIS = {
 	[ACTIONS.CREATE_PHOTO]: `${BASE_URL}/v1/photo`,
 	[ACTIONS.CREATE_UPLOAD_SESSION]: `${BASE_URL}/v1/photo:startUpload`,
 	[ACTIONS.DELETE_PHOTOS]: `${BASE_URL}/v1/photos:batchDelete`,
@@ -33,11 +33,17 @@ export function verifyBodyIsString(body) {
 	return JSON.stringify(body);
 }
 
-export default function fetcher(action, args) {
+export default function fetcher(action, args = {}) {
+	if (!action) {
+		const msg = 'Missing fetcher action';
+		toast(msg, { type: 'error' });
+		return Promise.reject(msg);
+	}
+
 	const access_token = getCookie('access_token');
 	if (!access_token) {
 		toast('Missing access token; cannot communicate with API', { type: 'error' });
-		return;
+		return Promise.reject('Missing access token');
 	}
 
 	let method = 'GET';
@@ -61,7 +67,14 @@ export default function fetcher(action, args) {
 		case ACTIONS.DELETE_PHOTOS: {
 			const { body } = args;
 
+			if (!body) {
+				const msg = 'Missing body';
+				toast(msg, { type: 'error' });
+				return Promise.reject(msg);
+			}
+
 			options.body = verifyBodyIsString(body);
+			options.headers['Content-Type'] = 'application/json';
 			options.method = 'POST';
 
 			break;
@@ -73,7 +86,7 @@ export default function fetcher(action, args) {
 			if (!photoId) {
 				const msg = 'Missing photoId';
 				toast(msg, { type: 'error' });
-				throw new Error(msg);
+				return Promise.reject(msg);
 			}
 
 			uri = uri.replace('{photoId}', photoId);
@@ -102,7 +115,7 @@ export default function fetcher(action, args) {
 				const missing = requiredKeys.filter((key) => !required[key]);
 				const msg = `${requiredKeys} are required but missing ${missing}`;
 				toast(msg, { type: 'error' })
-				throw new Error(msg);
+				return Promise.reject(msg);
 			}
 
 			uri = uri.replace('{photoId}', photoId);
@@ -121,16 +134,29 @@ export default function fetcher(action, args) {
 			if (!body) {
 				const msg = 'Request body is missing';
 				toast(msg, { type: 'error' });
-				throw new Error(msg);
+				return Promise.reject(msg);
 			}
 
 			options.body = verifyBodyIsString(body);
+			options.headers['Content-Type'] = 'application/json';
 			options.method = 'POST';
 			break;
 		}
 
 		case ACTIONS.UPLOAD_PHOTO: {
 			const { body, uploadUrl } = args;
+
+			if (!body) {
+				const msg = 'Request body is missing';
+				toast(msg, { type: 'error' });
+				return Promise.reject(msg);
+			}
+
+			if (!uploadUrl) {
+				const msg = 'Request uploadUrl is missing';
+				toast(msg, { type: 'error' });
+				return Promise.reject(msg);
+			}
 
 			uri = uploadUrl;
 
