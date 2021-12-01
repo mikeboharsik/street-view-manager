@@ -14,10 +14,18 @@ describe('verifyBodyIsString', () => {
 
 		const result = verifyBodyIsString(testBody);
 
-		expect(result).toEqual(testBody);
+		expect(result).toBe(testBody);
 	});
 
-	it('returns string when argument is not a string', () => {
+	it('returns argument when argument is an array', () => {
+		const testBody = new ArrayBuffer();
+
+		const result = verifyBodyIsString(testBody);
+
+		expect(result).toBe(testBody);
+	});
+
+	it('returns string when argument is not a string or an array', () => {
 		const testBody = { test: true };
 
 		const result = verifyBodyIsString(testBody);
@@ -44,12 +52,29 @@ describe('fetcher', () => {
 			getCookie.mockReturnValue('TEST_ACCESS_TOKEN');
 		});
 
-		it('is called with authorization header and method POST', () => {
+		it('returns a rejected promise when there is no body', async () => {
+			await expect(fetcher(ACTIONS.CREATE_PHOTO)).rejects.toEqual('Missing body');
+		});
+
+		it('returns a rejected promise when body has no uploadReference', async () => {
+			await expect(fetcher(ACTIONS.CREATE_PHOTO, { body: {} })).rejects.toEqual('Missing uploadReference');
+		});
+
+		it('returns a rejected promise when uploadReference has no uploadUrl', async () => {
+			await expect(fetcher(ACTIONS.CREATE_PHOTO, { body: { uploadReference: {} } })).rejects.toEqual('Missing uploadUrl');
+		});
+
+		it('is called with correct headers, method POST, and correct URI when body is provided', () => {
 			const expectedUri = URIS[ACTIONS.CREATE_PHOTO];
+			const mockBody = { uploadReference: { uploadUrl: 'MOCK_UPLOAD_URL' } };
 
-			fetcher(ACTIONS.CREATE_PHOTO);
+			fetcher(ACTIONS.CREATE_PHOTO, { body: mockBody });
 
-			expect(mockFetch).toHaveBeenCalledWith(expectedUri, { headers: { Authorization: 'Bearer TEST_ACCESS_TOKEN' }, method: 'POST' });
+			expect(mockFetch).toHaveBeenCalledWith(expectedUri, {
+				body: JSON.stringify(mockBody),
+				headers: { Authorization: 'Bearer TEST_ACCESS_TOKEN', 'Content-Type': 'application/json' },
+				method: 'POST',
+			});
 		});
 	});
 
@@ -72,7 +97,7 @@ describe('fetcher', () => {
 			getCookie.mockReturnValue('TEST_ACCESS_TOKEN');
 		});
 
-		it('throws an error when body is not provided', async () => {
+		it('returns a rejected promise when body is not provided', async () => {
 			await expect(fetcher(ACTIONS.DELETE_PHOTOS)).rejects.toEqual('Missing body');
 		});
 
@@ -97,7 +122,7 @@ describe('fetcher', () => {
 			getCookie.mockReturnValue('TEST_ACCESS_TOKEN');
 		});
 
-		it('throws an error when photoId is not provided', async () => {
+		it('returns a rejected promise when photoId is not provided', async () => {
 			await expect(fetcher(ACTIONS.GET_PHOTO)).rejects.toEqual('Missing photoId');
 		});
 
@@ -122,7 +147,7 @@ describe('fetcher', () => {
 			getCookie.mockReturnValue('TEST_ACCESS_TOKEN');
 		});
 
-		it('throws an error when body is not provided', async () => {
+		it('returns a rejected promise when body is not provided', async () => {
 			await expect(fetcher(ACTIONS.UPDATE_PHOTOS)).rejects.toEqual('Request body is missing');
 		});
 
@@ -141,6 +166,36 @@ describe('fetcher', () => {
 				headers: {
 					Authorization: 'Bearer TEST_ACCESS_TOKEN',
 					'Content-Type': 'application/json',
+				},
+				method: 'POST',
+			});
+		});
+	});
+
+	describe(`${ACTIONS.UPLOAD_PHOTO}`, () => {
+		beforeEach(() => {
+			getCookie.mockReturnValue('TEST_ACCESS_TOKEN');
+		});
+
+		it('returns a rejected promise when body is not provided', async () => {
+			await expect(fetcher(ACTIONS.UPLOAD_PHOTO)).rejects.toEqual('Request body is missing');
+		});
+
+		it('returns a rejected promise when uploadUrl is not provided', async () => {
+			await expect(fetcher(ACTIONS.UPLOAD_PHOTO, { body: 'a bunch of bytes' })).rejects.toEqual('Request uploadUrl is missing');
+		});
+
+		it('is called with correct headers, method POST, and correct URI when body is provided', () => {
+			const expectedUri = 'https://mocksite.com/upload/uploadId';
+			const mockOptions = { body: new ArrayBuffer(), uploadUrl: expectedUri };
+
+			fetcher(ACTIONS.UPLOAD_PHOTO, mockOptions);
+
+			expect(mockFetch).toHaveBeenCalledWith(expectedUri, {
+				body: mockOptions.body,
+				headers: {
+					Authorization: 'Bearer TEST_ACCESS_TOKEN',
+					'Content-Type': 'image/jpeg',
 				},
 				method: 'POST',
 			});

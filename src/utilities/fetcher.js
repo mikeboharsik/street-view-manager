@@ -30,6 +30,10 @@ export function verifyBodyIsString(body) {
 		return body;
 	}
 
+	if (body instanceof ArrayBuffer) {
+		return body;
+	}
+
 	return JSON.stringify(body);
 }
 
@@ -57,7 +61,34 @@ export default function fetcher(action, args = {}) {
 	let uri = URIS[action];
 
 	switch(action) {
-		case ACTIONS.CREATE_PHOTO:
+		case ACTIONS.CREATE_PHOTO: {
+			const { body } = args;
+			if (!body) {
+				const msg = 'Missing body';
+				toast(msg, { type: 'error' });
+				return Promise.reject(msg);
+			}
+
+			const { uploadReference } = body;
+			if (!uploadReference) {
+				const msg = 'Missing uploadReference';
+				toast(msg, { type: 'error' });
+				return Promise.reject(msg);
+			}
+
+			const { uploadUrl } = uploadReference;
+			if (!uploadUrl) {
+				const msg = 'Missing uploadUrl';
+				toast(msg, { type: 'error' });
+				return Promise.reject(msg);
+			}
+
+			options.method = 'POST';
+			options.headers = { ...options.headers, 'Content-Type': 'application/json' };
+
+			break;
+		}
+
 		case ACTIONS.CREATE_UPLOAD_SESSION: {
 			options.method = 'POST';
 
@@ -73,7 +104,6 @@ export default function fetcher(action, args = {}) {
 				return Promise.reject(msg);
 			}
 
-			options.body = verifyBodyIsString(body);
 			options.headers['Content-Type'] = 'application/json';
 			options.method = 'POST';
 
@@ -91,6 +121,7 @@ export default function fetcher(action, args = {}) {
 
 			uri = uri.replace('{photoId}', photoId);
 			uri += `?view=INCLUDE_DOWNLOAD_URL`;
+
 			break;
 		}
 
@@ -123,8 +154,8 @@ export default function fetcher(action, args = {}) {
 			const queryData = Object.keys(query).map((key) => `${key}=${query[key]}`).join('&');
 			uri += `?${queryData}`;
 
-			options.body = verifyBodyIsString(body);
 			options.method = 'PUT';
+
 			break;
 		}
 
@@ -137,9 +168,9 @@ export default function fetcher(action, args = {}) {
 				return Promise.reject(msg);
 			}
 
-			options.body = verifyBodyIsString(body);
 			options.headers['Content-Type'] = 'application/json';
 			options.method = 'POST';
+
 			break;
 		}
 
@@ -160,15 +191,18 @@ export default function fetcher(action, args = {}) {
 
 			uri = uploadUrl;
 
-			options.body = body;
 			options.method = 'POST';
-			options.headers = { ...options.headers, 'content-type': 'image/jpeg' };
+			options.headers = { ...options.headers, 'Content-Type': 'image/jpeg' };
 
 			break;
 		}
 
 		default:
 			break;
+	}
+
+	if (args.body) {
+		options.body = verifyBodyIsString(args.body);
 	}
 
 	return fetch(uri, options);

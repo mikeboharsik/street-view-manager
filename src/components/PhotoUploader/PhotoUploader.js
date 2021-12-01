@@ -44,6 +44,8 @@ export default function PhotoUploader() {
 				const { uploadUrl } = await fetcher(ACTIONS.CREATE_UPLOAD_SESSION).then((res) => res.json());
 
 				await fetcher(ACTIONS.UPLOAD_PHOTO, { body: await file.arrayBuffer(), uploadUrl });
+
+				await fetcher(ACTIONS.CREATE_PHOTO, { body: { uploadReference: { uploadUrl } } });
 			} catch(e) {
 				console.error('Encountered unhandled exception when uploading new photo:', e);
 
