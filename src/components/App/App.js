@@ -27,8 +27,8 @@ export default function App() {
           <UtilityBar />
           <Modal />
           <Switch>
-            <Route path="/photoEditor/:photoId" component={PhotoEditor} exact />
-            <Route path="/photoUploader" component={PhotoUploader} exact />
+            <Route path="/photo/:photoId" component={PhotoEditor} exact />
+            <Route path="/upload" component={PhotoUploader} exact />
             <Route path="/oauth" component={OAuth} exact />
             <Route path="/" component={Landing} />
           </Switch>

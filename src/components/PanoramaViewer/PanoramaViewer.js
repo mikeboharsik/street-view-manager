@@ -4,15 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import './PanoramaViewer.css';
 
-function cameraChangeHandler(cam) {
-	// North is -90 (-1.57) on the Y
-
-	//let { rotation: { _x: x, _y: y, _z: z } } = cam;
-
-	//[x, y, z] = [x * (180 / Math.PI), y * (180 / Math.PI), z * (180 / Math.PI)];
-}
-
-export default function PanoramaViewer({ height = 150, image = null, width = 300 }) {
+export default function PanoramaViewer({ height = 300, file = null, onChange, width = 600 }) {
 	const [isGrabbing, setIsGrabbing] = useState(false);
 
 	const [camera, setCamera] = useState(null);
@@ -25,26 +17,27 @@ export default function PanoramaViewer({ height = 150, image = null, width = 300
 	const containerStyle = isGrabbing ? { cursor: 'grabbing' } : { cursor: 'grab' };
 
 	useEffect(() => {
-		if (image && renderContainer.current && scene === null && renderer === null) {
+		if (file && renderContainer.current && scene === null && renderer === null) {
 			const newScene = new THREE.Scene();
 			setScene(newScene);
 			
-			const newTexture = new THREE.TextureLoader().load(image);
+			const newTexture = new THREE.TextureLoader().load(file.localUrl);
 			setTexture(newTexture);
-			newTexture.mapping = 303;
-			
+			newTexture.mapping = THREE.EquirectangularReflectionMapping;
 			newScene.background = newTexture;
 			
-			const newCamera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
-			newCamera.position.x = -0.001;
-			setCamera(newCamera);
-
 			const newRenderer = new THREE.WebGLRenderer();
 			newRenderer.setSize(width, height);
 			setRenderer(newRenderer);
+			
+			const newCamera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+			newCamera.position.x = -0.001;
+			setCamera(newCamera);
 
 			const controls = new OrbitControls(newCamera, newRenderer.domElement);
-			controls.addEventListener('change', () => cameraChangeHandler(newCamera));
+			if (typeof onChange === 'function') {
+				controls.addEventListener('change', () => onChange(newCamera));
+			}
 
 			function animate() {
 				requestAnimationFrame(animate);
@@ -55,15 +48,18 @@ export default function PanoramaViewer({ height = 150, image = null, width = 300
 
 			renderContainer.current.appendChild(newRenderer.domElement);
 		}
-	}, [camera, height, image, renderer, scene, texture, width]);
+	}, [camera, file, height, onChange, renderer, scene, texture, width]);
 
-	if (!image) {
+	if (!file) {
 		return null;
 	}
 
+	const idPostfix = file.localUrl.replace(`blob:${window.location.origin}/`, '')
+
 	return (
 		<div
-			id="render-container"
+			className="render-container"
+			id={`render-container_${idPostfix}`}
 			onMouseDown={() => setIsGrabbing(true)}
 			onMouseUp={() => setIsGrabbing(false)}
 			ref={renderContainer}

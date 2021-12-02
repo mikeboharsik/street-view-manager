@@ -4,19 +4,23 @@ import { toast } from 'react-toastify';
 
 import { fetcher, ACTIONS } from '../../utilities';
 
-import PanoramaViewer from '../PanoramaViewer/PanoramaViewer';
+import { UploadPreviews } from '.';
 
 import './PhotoUploader.css';
 
 const UPLOAD_STATUS = {
 	PENDING: 'PENDING',
-	IN_PROGRESS: 'IN_PROGRESS',
+
+	CREATING_SESSION: 'CREATING_SESSION',
+	UPLOADING_PHOTO: 'UPLOADING_PHOTO',
+	CREATING_PHOTO: 'CREATING_PHOTO',
+
 	COMPLETE: 'COMPLETE',
 }
 
 export default function PhotoUploader() {
 	const [files, setFiles] = useState(null);
-	const [uploadProgress, setUploadProgress] = useState(null);
+	const [uploadProgress, setUploadProgress] = useState({});
 
 	useEffect(() => {}, [uploadProgress]);
 
@@ -25,27 +29,59 @@ export default function PhotoUploader() {
 		
 		newFiles.forEach((file) => file.localUrl = URL.createObjectURL(file));
 
+		setUploadProgress((prev) => {
+			const next = { ...prev };
+
+			newFiles.forEach((file) => {
+				next[file] = {
+					createUrl: null,
+					status: UPLOAD_STATUS.PENDING,
+				};
+			});
+
+			return next;
+		});
+
 		setFiles(newFiles);
 	}
 
 	async function handleUpload() {
-		const newUploadProgress = files.map((file) => ({
-			createUrl: null,
-			file,
-			status: UPLOAD_STATUS.PENDING,
-		}));
+		files.forEach(async (file) => {
+			let fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.CREATING_SESSION };
 
-		setUploadProgress(newUploadProgress);
-
-		newUploadProgress.forEach(async (upload) => {
 			try {
-				const { file } = upload;
+				setUploadProgress((prev) => {
+					const next = { ...prev };
+					next[file] = fileProgress;
+					return next;
+				});
 
 				const { uploadUrl } = await fetcher(ACTIONS.CREATE_UPLOAD_SESSION).then((res) => res.json());
 
+				fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.UPLOADING_PHOTO };
+				setUploadProgress((prev) => {
+					const next = { ...prev };
+					next[file] = fileProgress;
+					return next;
+				});
+
 				await fetcher(ACTIONS.UPLOAD_PHOTO, { body: await file.arrayBuffer(), uploadUrl });
 
+				fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.CREATING_PHOTO };
+				setUploadProgress((prev) => {
+					const next = { ...prev };
+					next[file] = fileProgress;
+					return next;
+				});
+
 				await fetcher(ACTIONS.CREATE_PHOTO, { body: { uploadReference: { uploadUrl } } });
+
+				fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.COMPLETE };
+				setUploadProgress((prev) => {
+					const next = { ...prev };
+					next[file] = fileProgress;
+					return next;
+				});
 			} catch(e) {
 				console.error('Encountered unhandled exception when uploading new photo:', e);
 
@@ -62,38 +98,18 @@ export default function PhotoUploader() {
 		return null;
 	}
 
-	function ImagePreviews() {
-		if (files?.length > 0) {
-			return files.map((file) => (
-				<div key={file.name} className="uploader-image-preview-container">
-					<img alt={file.name} className="uploader-image-preview-image" src={file.localUrl} title={file.name} />
-					<div className="uploader-image-preview-container-image-overlay">
-						<span className="uploader-image-preview-container-image-overlay-filename">
-							{file.name}
-						</span>
-					</div>
-				</div>
-			));
-		}
-
-		return null;
-	}
-
 	return (
 		<div id="uploader-container">
 			<input
 				accept=".jpg"
 				multiple="multiple"
 				onChange={handleFilesChange}
-				style={{}}
 				type="file"
 			/>
 
-			<ImagePreviews />
+			<UploadPreviews files={files} uploadProgress={uploadProgress} />
 
 			<UploadButton />
-
-			<PanoramaViewer image={files?.[0]?.localUrl} />
 		</div>
 	);
 }

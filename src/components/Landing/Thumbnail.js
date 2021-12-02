@@ -42,7 +42,7 @@ export default function Thumbnail({ hide, photo }) {
 		);
 	} else {
 		image = (
-			<Link to={`/photoEditor/${photoId}`}>
+			<Link to={`/photo/${photoId}`}>
 				<img className="thumbnail-image" alt="" src={imgSrc} />
 			</Link>
 		);

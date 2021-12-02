@@ -20,7 +20,7 @@ function AddPhotosLink() {
 	if (isAddPhotosEnabled) {
 		return (
 			<span style={{ fontWeight: 'bold', paddingLeft: '16px', position: 'absolute' }}>
-				<Link style={{ textDecoration: 'none' }} to="/photoUploader">+</Link>
+				<Link style={{ textDecoration: 'none' }} to="/upload">+</Link>
 			</span>
 		);
 	}
