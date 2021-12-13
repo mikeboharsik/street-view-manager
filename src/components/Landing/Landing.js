@@ -8,7 +8,6 @@ import { FEATURE_FLAGS, getAuthUri, getFeatureFlags } from '../../utilities';
 
 import { PhotosNav, Thumbnails } from '.';
 
-import { selectPhotos } from '../GlobalState/selectors/selectUploads';
 import selectFetcher from '../GlobalState/selectors/selectFetcher';
 
 import './Landing.css';
@@ -34,15 +33,12 @@ export default function Landing() {
 	const { dispatch, state } = useContext(GlobalState);
 
 	const { inProgress } = selectFetcher(state, 'photos');
-	const photos = selectPhotos(state);
 
 	useEffect(() => {
-		if (isAuthed && inProgress === null) {
+		if (dispatch && isAuthed && inProgress === null) {
 			getPhotos(dispatch);
-
-			return;
 		}
-	}, [dispatch, inProgress, isAuthed, photos]);
+	}, [dispatch, inProgress, isAuthed]);
 
 	if (isAuthed === null || inProgress === true) {
 		return null;

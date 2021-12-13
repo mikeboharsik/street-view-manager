@@ -3,8 +3,8 @@ import { ACTIONS } from '../GlobalState/reducers/global';
 
 export default async function getPhotos(dispatch) {
 	try {
-		dispatch({ payload: { showLoader: true }, type: ACTIONS.SET_SHOWLOADER });
 		dispatch({ payload: { inProgress: true, type: 'photos' }, type: ACTIONS.SET_FETCHER });
+		dispatch({ payload: { showLoader: true }, type: ACTIONS.SET_SHOWLOADER });
 
 		let pageToken = null;
 		do {
@@ -17,8 +17,8 @@ export default async function getPhotos(dispatch) {
 	} catch(e) {
 		console.error(e);
 	} finally {
+		dispatch({ payload: { inProgress: false, type: 'photos' }, type: ACTIONS.SET_FETCHER });
 		dispatch({ payload: { reverse: true, sortProp: 'captureTime' }, type: ACTIONS.SORT_PHOTOS });
 		dispatch({ payload: { showLoader: false }, type: ACTIONS.SET_SHOWLOADER });
-		dispatch({ payload: { inProgress: false, type: 'photos' }, type: ACTIONS.SET_FETCHER });
 	}
 }

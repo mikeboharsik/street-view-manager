@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import GlobalState from '../GlobalState';
 import { selectFetcher, selectUploads } from '../GlobalState/selectors';
@@ -26,7 +27,7 @@ export default function Thumbnails() {
 	if (photos?.length <= 0 && inProgress === false) {
 		return (
 			<div>
-				No photos. Go ahead and upload some.
+				No photos. Go ahead and <Link to='/upload'>upload some.</Link>
 			</div>
 		);
 	}

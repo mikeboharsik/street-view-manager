@@ -294,15 +294,51 @@ describe('uploads', () => {
 					{ photoId: { id: 'photo2' } },
 					{ photoId: { id: 'photo3' } },
 				];
-				const initState = { ...initialState, uploads: { ...initialState.uploads, photos: initPhotos } };
+				const initState = {
+					...initialState,
+					uploads: {
+						...initialState.uploads,
+						photos: initPhotos,
+						thumbnails: {
+							photo1: 'blob:http://localhost:3000/photo1',
+							photo2: 'blob:http://localhost:3000/photo2',
+							photo3: 'blob:http://localhost:3000/photo3',
+						},
+					},
+				};
+
 				const expectedPhotos = [{ photoId: { id: 'photo2' } }];
+				const expectedThumbnails = { photo2: 'blob:http://localhost:3000/photo2' };
 
 				const state = globalReducer(initState, action);
+
 				expect(state.uploads.photos).toEqual(expectedPhotos);
+				expect(state.uploads.thumbnails).toEqual(expectedThumbnails);
 			});
 		});
 
 		describe('SORT_PHOTOS', () => {
+			it('sorts photos by uploadTime when no payload is provided', () => {
+				const action = { type: ACTIONS.SORT_PHOTOS };
+
+				const photo1 = { captureTime: '2004-01-01T00:00:00Z', uploadTime: '2005-01-01T00:00:00Z' };
+				const photo2 = { captureTime: '2003-01-01T00:00:00Z', uploadTime: '2004-01-01T00:00:00Z' };
+				const photo3 = { captureTime: '2001-01-01T00:00:00Z', uploadTime: '2003-01-01T00:00:00Z' };
+				const photo4 = { captureTime: '2002-01-01T00:00:00Z', uploadTime: '2002-01-01T00:00:00Z' };
+				const photo5 = { captureTime: '2005-01-01T00:00:00Z', uploadTime: '2001-01-01T00:00:00Z' };
+
+				const testPhotos = [photo1, photo2, photo3, photo4, photo5];
+				const initState = { ...initialState, uploads: { ...initialState.uploads, photos: testPhotos } };
+
+				const state = globalReducer(initState, action);
+
+				expect(state.uploads.photos[0]).toBe(photo5);
+				expect(state.uploads.photos[1]).toBe(photo4);
+				expect(state.uploads.photos[2]).toBe(photo3);
+				expect(state.uploads.photos[3]).toBe(photo2);
+				expect(state.uploads.photos[4]).toBe(photo1);
+			});
+
 			it('sorts photos according to the provided function', () => {
 				const testSortFunc1 = (a, b) => a.captureTime < b.captureTime ? -1 : a.captureTime > b.captureTime ? 1 : 0;
 				const action1 = { payload: { sortFunc: testSortFunc1 }, type: ACTIONS.SORT_PHOTOS };
@@ -354,8 +390,17 @@ describe('uploads', () => {
 		});
 
 		describe('UPDATE_PHOTO', () => {
-			it('adds photo if photos are null', () => {
-				const testPhoto = { photoId: { id: 'photo1' }, places: [{ name: 'testPlace' }] };
+			it('adds photo if photos are null and updates places', () => {
+				const testPlace1 = { languageCode: 'en', name: 'testPlace1', placeId: 'testPlace1Id' };
+				const testPlace2 = { languageCode: 'en', name: 'testPlace2', placeId: 'testPlace2Id' };
+				const testPlaces = [testPlace1, testPlace2];
+
+				const testPhoto = { photoId: { id: 'photo1' }, places: testPlaces };
+
+				const expectedPlaces = {
+					[testPlace1.placeId]: testPlace1,
+					[testPlace2.placeId]: testPlace2,
+				};
 
 				const action = {
 					payload: {
@@ -369,7 +414,7 @@ describe('uploads', () => {
 				const foundPhoto = state.uploads.photos[0];
 				expect(foundPhoto).toBe(testPhoto);
 
-				expect(Object.keys(state.uploads.places).length).toBeGreaterThan(0);
+				expect(state.uploads.places).toEqual(expectedPlaces);
 			});
 
 			it('adds photo if it does not already exist', () => {

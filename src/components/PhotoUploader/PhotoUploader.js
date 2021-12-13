@@ -1,28 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
 
-import { fetcher, ACTIONS } from '../../utilities';
+import { ACTIONS } from '../GlobalState/reducers/global';
+import { fetcher, ACTIONS as FETCHER_ACTIONS } from '../../utilities';
 
 import { UploadPreviews } from '.';
 
 import './PhotoUploader.css';
+import { useDispatch } from '../../hooks';
 
-const UPLOAD_STATUS = {
+export const UPLOAD_STATUS = {
 	PENDING: 'PENDING',
 
 	CREATING_SESSION: 'CREATING_SESSION',
 	UPLOADING_PHOTO: 'UPLOADING_PHOTO',
 	CREATING_PHOTO: 'CREATING_PHOTO',
 
+	ERROR: 'ERROR',
+
 	COMPLETE: 'COMPLETE',
 }
 
 export default function PhotoUploader() {
+	const history = useHistory();
+
+	const dispatch = useDispatch();
+
 	const [files, setFiles] = useState(null);
 	const [uploadProgress, setUploadProgress] = useState({});
-
-	useEffect(() => {}, [uploadProgress]);
 
 	function handleFilesChange(e) {
 		const newFiles = Array.from(e.target.files);
@@ -56,7 +63,7 @@ export default function PhotoUploader() {
 					return next;
 				});
 
-				const { uploadUrl } = await fetcher(ACTIONS.CREATE_UPLOAD_SESSION).then((res) => res.json());
+				const { uploadUrl } = await fetcher(FETCHER_ACTIONS.CREATE_UPLOAD_SESSION).then((res) => res.json());
 
 				fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.UPLOADING_PHOTO };
 				setUploadProgress((prev) => {
@@ -65,7 +72,7 @@ export default function PhotoUploader() {
 					return next;
 				});
 
-				await fetcher(ACTIONS.UPLOAD_PHOTO, { body: await file.arrayBuffer(), uploadUrl });
+				await fetcher(FETCHER_ACTIONS.UPLOAD_PHOTO, { body: await file.arrayBuffer(), uploadUrl });
 
 				fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.CREATING_PHOTO };
 				setUploadProgress((prev) => {
@@ -74,7 +81,16 @@ export default function PhotoUploader() {
 					return next;
 				});
 
-				await fetcher(ACTIONS.CREATE_PHOTO, { body: { uploadReference: { uploadUrl } } });
+				const photoResult = await fetcher(FETCHER_ACTIONS.CREATE_PHOTO, { body: { uploadReference: { uploadUrl } } });
+				const ob = await photoResult.json();
+
+				if (!photoResult.ok) {
+					const { error: { code, message, status } } = ob;
+					throw new Error(`Response code is ${code}, message is ${message}, status is ${status}`);
+				}
+
+				dispatch({ payload: { photos: [ob] }, type: ACTIONS.ADD_PHOTOS });
+				dispatch({ type: ACTIONS.SORT_PHOTOS });
 
 				fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.COMPLETE };
 				setUploadProgress((prev) => {
@@ -82,10 +98,21 @@ export default function PhotoUploader() {
 					next[file] = fileProgress;
 					return next;
 				});
+
+				toast('Photo uploaded!', { type: 'success' });
+
+				history.push('/');
 			} catch(e) {
+				fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.ERROR };
+				setUploadProgress((prev) => {
+					const next = { ...prev };
+					next[file] = fileProgress;
+					return next;
+				});
+
 				console.error('Encountered unhandled exception when uploading new photo:', e);
 
-				toast(e.message, { type: 'error' });
+				toast(e.message, { autoClose: false, type: 'error' });
 			}
 		});
 	}
@@ -102,7 +129,6 @@ export default function PhotoUploader() {
 		<div id="uploader-container">
 			<input
 				accept=".jpg"
-				multiple="multiple"
 				onChange={handleFilesChange}
 				type="file"
 			/>
