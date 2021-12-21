@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import GlobalState from '../GlobalState';
 import getPhotos from './getPhotos';
 import { useIsAuthed } from '../../hooks';
-import { FEATURE_FLAGS, getAuthUri, getFeatureFlags } from '../../utilities';
+import { getAuthUri } from '../../utilities';
 
 import { PhotosNav, Thumbnails } from '.';
 
@@ -13,18 +13,11 @@ import selectFetcher from '../GlobalState/selectors/selectFetcher';
 import './Landing.css';
 
 function AddPhotosLink() {
-	const { isEnabled } = getFeatureFlags();
-	const isAddPhotosEnabled = isEnabled(FEATURE_FLAGS.ADD_PHOTOS);
-
-	if (isAddPhotosEnabled) {
-		return (
-			<span style={{ fontWeight: 'bold', paddingLeft: '16px', position: 'absolute' }}>
-				<Link style={{ textDecoration: 'none' }} to="/upload">+</Link>
-			</span>
-		);
-	}
-
-	return null;
+	return (
+		<span style={{ fontWeight: 'bold', paddingLeft: '16px', position: 'absolute' }}>
+			<Link style={{ textDecoration: 'none' }} title="Upload" to="/upload">+</Link>
+		</span>
+	);
 }
 
 export default function Landing() {

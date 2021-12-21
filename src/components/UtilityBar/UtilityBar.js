@@ -4,7 +4,6 @@ import { useLocation } from 'react-router';
 import { Gear, X } from '../icons';
 import GlobalState from '../GlobalState';
 import { useIsAuthed } from '../../hooks';
-import { FEATURE_FLAGS, getFeatureFlags } from '../../utilities';
 
 import { ACTIONS } from '../GlobalState/reducers/global';
 
@@ -30,10 +29,14 @@ function Functions() {
 	return (
 		<div style={{ textAlign: 'center' }}>
 			<div style={{ borderTop: '1px solid black', marginBottom: '4px', marginTop: '8px' }} />
+
 			<div className={functionClassName} onClick={getConnectHandler(state)}>Con</div>
 			<div className={functionClassName} onClick={getUpdatePlacesHandler(state)}>Places</div>
 			<div className={functionClassName} onClick={getUpdateLevelHandler(state)}>Level</div>
 			<div className={functionClassName} onClick={getDeleteHandler(dispatch, state)}>Delete</div>
+
+			<div style={{ borderTop: '1px solid black', marginBottom: '4px', marginTop: '8px' }} />
+
 			<div className={functionClassName} onClick={() => dispatch({ type: ACTIONS.CLEAR_MULTISELECT })}>{`Clear (${ids.length})`}</div>
 		</div>
 	);
@@ -47,11 +50,8 @@ export default function UtilityBar() {
 	const isAuthed = useIsAuthed();
 
 	const { pathname } = useLocation();
-	const { isEnabled: isFeatureEnabled } = getFeatureFlags();
 
-	const isUtilityBarEnabled = isFeatureEnabled(FEATURE_FLAGS.UTILITY_BAR);
-
-	if (!isAuthed || !isUtilityBarEnabled || showLoader || pathname !== '/') {
+	if (!isAuthed || showLoader || pathname !== '/') {
 		return null;
 	}
 

@@ -1,11 +1,4 @@
-export const initFeatureFlags = {
-	ADD_PHOTOS: {
-		isEnabled: false,
-	},
-	UTILITY_BAR: {
-		isEnabled: false,
-	}
-};
+export const initFeatureFlags = {};
 
 export const FEATURE_FLAGS = Object.keys(initFeatureFlags).reduce((a, c) => { a[c] = c.toString(); return a; }, {});
 
