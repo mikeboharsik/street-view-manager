@@ -1,18 +1,35 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { getCookie, setCookie } from '../../utilities/getCookies';
+
 import GitHashLink from './GitHashLink';
 
 import './Footer.css';
 
 import LogoutButton from './LogoutButton';
 
+const cookieName = 'userDismissedBetaNotice';
+
+function toastOnClose() {
+	const expires = new Date();
+
+	expires.setMonth(expires.getMonth() + 1);
+
+	setCookie(cookieName, true, expires);
+}
+
 export default function Footer() {
-	const [userWasWarned, setUserWasWarned] = useState(false);
+	const userDismissedBetaNotice = getCookie(cookieName) === 'true';
+
+	const [userWasWarned, setUserWasWarned] = useState(userDismissedBetaNotice);
 
 	useEffect(() => {
 		if (!userWasWarned) {
-			toast('This software is in development. Please excuse any bugs or missing features.', { autoClose: 10000, type: 'info' })
+			toast(
+				'This software is in development. Please excuse any bugs or missing features.',
+				{ autoClose: false, onClose: toastOnClose, type: 'info' },
+			);
 			setUserWasWarned(true);
 		}
 	}, [setUserWasWarned, userWasWarned]);

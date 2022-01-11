@@ -8,14 +8,13 @@ export function setCookie(key, val, expires) {
 	document.cookie = cookie;
 }
 
-export function getCookie(key) {
-	return document.cookie
-		.split(';')
-		.reduce((acc, cookie) => { const [key, val] = cookie.split('='); acc[key] = val; return acc; }, {})[key];
-}
-
 export default function getCookies() {
 	return document.cookie
 		.split(';')
+		.map(e => e.trim())
 		.reduce((acc, cookie) => { const [key, val] = cookie.split('='); acc[key] = val; return acc; }, {});
+}
+
+export function getCookie(key) {
+	return getCookies()[key];
 }
