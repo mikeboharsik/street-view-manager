@@ -26,7 +26,7 @@ export default function getUpdatePlacesHandler(state) {
 		const body = {};
 		body.updatePhotoRequests = photosToUpdate.map((photo) => ({
 			photo,
-			updateMask: 'places',
+			updateMask: 'places,pose.latLngPair',
 		}));
 
 		try {

@@ -14,7 +14,7 @@ export default async function updatePlaces(dispatch, curPhoto, placesInput) {
 	const updatedPhoto = JSON.parse(JSON.stringify(curPhoto));
 	updatedPhoto.places = newPlaces;
 
-	const options = { body: updatedPhoto, photoId, query: { updateMask: 'places' } };
+	const options = { body: updatedPhoto, photoId, query: { updateMask: 'places,pose.latLngPair' } };
 
 	try {
 		await updatePhoto(dispatch, options);
