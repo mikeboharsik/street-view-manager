@@ -130,6 +130,7 @@ export default function PhotoUploader() {
 			<input
 				accept=".jpg"
 				onChange={handleFilesChange}
+				multiple
 				type="file"
 			/>
 
