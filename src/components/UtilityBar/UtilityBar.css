@@ -11,7 +11,7 @@
 	position: absolute;
 	right: 0;
 	user-select: none;
-	z-index: 1000;
+	z-index: 1;
 }
 
 .utilityBar-container-active {
@@ -29,4 +29,10 @@
 
 .utilityBar-function-inactive {
 	pointer-events: none;
+}
+
+.utilityBar-separator {
+	border-top: 1px solid black;
+	margin-bottom: 4px;
+	margin-top: 8px;
 }

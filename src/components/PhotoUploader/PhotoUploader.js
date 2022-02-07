@@ -90,7 +90,7 @@ export default function PhotoUploader() {
 				}
 
 				dispatch({ payload: { photos: [ob] }, type: ACTIONS.ADD_PHOTOS });
-				dispatch({ type: ACTIONS.SORT_PHOTOS });
+				dispatch({ payload: { reverse: true, sortProp: 'captureTime' }, type: ACTIONS.SORT_PHOTOS });
 
 				fileProgress = { ...uploadProgress[file], status: UPLOAD_STATUS.COMPLETE };
 				setUploadProgress((prev) => {

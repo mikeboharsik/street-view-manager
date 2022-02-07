@@ -14,6 +14,8 @@ import getDeleteHandler from './getDeleteHandler';
 import getUpdateLevelHandler from './getUpdateLevelHandler';
 import getUpdatePlacesHandler from './getUpdatePlacesHandler';
 
+import { FEATURE_FLAGS, getFeatureFlag } from '../../utilities';
+
 import './UtilityBar.css';
 
 function Functions() {
@@ -28,16 +30,20 @@ function Functions() {
 
 	return (
 		<div style={{ textAlign: 'center' }}>
-			<div style={{ borderTop: '1px solid black', marginBottom: '4px', marginTop: '8px' }} />
+			<div className="utilityBar-separator" />
 
-			<div className={functionClassName} onClick={getConnectHandler(state)}>Con</div>
-			<div className={functionClassName} onClick={getUpdatePlacesHandler(state)}>Places</div>
-			<div className={functionClassName} onClick={getUpdateLevelHandler(state)}>Level</div>
-			<div className={functionClassName} onClick={getDeleteHandler(dispatch, state)}>Delete</div>
+			<div className={functionClassName} onClick={getConnectHandler(state)} title="Set connections">Con</div>
+			<div className={functionClassName} onClick={getUpdatePlacesHandler(state)} title="Set places">Places</div>
+			<div className={functionClassName} onClick={getUpdateLevelHandler(state)} title="Set level">Level</div>
+			<div className={functionClassName} onClick={getDeleteHandler(dispatch, state)} title="Delete photos">Delete</div>
 
-			<div style={{ borderTop: '1px solid black', marginBottom: '4px', marginTop: '8px' }} />
+			{getFeatureFlag(FEATURE_FLAGS.MODAL_TEST) && <div className={functionClassName} onClick={() => dispatch({ payload: { form: <>LOL</> }, type: ACTIONS.SET_MODAL })} title="Test modal">Modal</div>}
 
-			<div className={functionClassName} onClick={() => dispatch({ type: ACTIONS.CLEAR_MULTISELECT })}>{`Clear (${ids.length})`}</div>
+			<div className="utilityBar-separator" />
+
+			<div className={functionClassName} onClick={() => dispatch({ type: ACTIONS.CLEAR_MULTISELECT })} title="Clear selection">
+				{`Clear (${ids.length})`}
+			</div>
 		</div>
 	);
 }

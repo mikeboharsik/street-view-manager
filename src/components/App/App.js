@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify';
 
 import { GlobalStateProvider } from '../GlobalState';
 
-import { getFeatureFlags } from '../../utilities';
+import '../../utilities/featureFlags';
 
 import { Landing, OAuth, PhotoEditor, PhotoUploader, UtilityBar } from '..';
 
@@ -11,10 +11,6 @@ import { Footer, Loader, Modal } from '.';
 
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css'
-
-window.SVM = {
-  featureFlags: getFeatureFlags(),
-};
 
 export default function App() {
   return (
