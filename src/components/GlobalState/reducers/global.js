@@ -1,3 +1,7 @@
+import localforage from 'localforage';
+
+const photosStore = localforage.createInstance({ name: 'photos-v1' });
+
 export const ACTIONS = {
 	ADD_PHOTOS: 'ADD_PHOTOS',
 	CLEAR_MULTISELECT: 'CLEAR_MULTISELECT',
@@ -34,6 +38,28 @@ export default function globalReducer(state, action) {
 				} else {
 					newPhotos[existingPhotoIdx] = photoToAdd;
 				}
+			});
+
+			newPhotos.forEach(async (photo) => {
+				const { local, photoId: { id } } = photo;
+
+				if (!local) {
+					return;
+				}
+
+				let updatedRow;
+				const row = await photosStore.getItem(id);
+				if (row) {
+					updatedRow = {
+						local: { ...row.local, ...local },
+					};
+				} else {
+					updatedRow = {
+						local: { ...local },
+					};
+				}
+
+				photosStore.setItem(id, updatedRow);
 			});
 
 			const newUploads = { ...state.uploads, photos: newPhotos };
@@ -95,6 +121,13 @@ export default function globalReducer(state, action) {
 				const exists = newPhotos.find((photo) => photo.photoId.id === id);
 				if (!exists) {
 					delete newThumbnails[id];
+				}
+			});
+
+			photoIds.forEach(async (id) => {
+				const row = await photosStore.getItem(id);
+				if (row) {
+					await photosStore.removeItem(id);
 				}
 			});
 

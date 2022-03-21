@@ -121,7 +121,7 @@ describe('featureFlags', () => {
 
 		describe('feature functions', () => {
 			it('verifies all functions exist', () => {
-				const functions = ['disable', 'enable', 'isEnabled', 'remove'];
+				const functions = ['isEnabled', 'toggle'];
 				const description = mockFeatureFlags[TEST_FLAG].description;
 				const mockFeatureFlag = window.SVM.featureFlags[description];
 

@@ -1,0 +1,41 @@
+{
+  "photoId": {
+    "id": "CAoSLEFGMVFpcE9maXhreDVQei1Xam5LLWI2N3BVbmZhOUduZWZmeUcxaE1RQk1H"
+  },
+  "downloadUrl": "https://lh3.googleusercontent.com/OibceEwDML7HbNapbU10mE2r5wzmIsGJOGc1JtKXodC6GY3Yzx0hL7sSejnssq3VMUW_wD5TqFwuyWRzt5pxqG-NsZ_wkXACGXk",
+  "pose": {
+    "latLngPair": {
+      "latitude": 42.3983942,
+      "longitude": -71.4422206
+    },
+    "altitude": "NaN",
+    "pitch": "NaN",
+    "roll": "NaN"
+  },
+  "connections": [
+    {
+      "target": {
+        "id": "CAoSLEFGMVFpcE9BUUk5a0FmYWNYbHBqUlRoWGNXZ0dwQkxuWU5hNC1mMVN6UU92"
+      }
+    },
+    {
+      "target": {
+        "id": "CAoSLEFGMVFpcE84VGY0XzhnUG50VlpUSDE0d2Jmd0VHMTA1cXNSRnpNZlo0WlNE"
+      }
+    }
+  ],
+  "captureTime": "2021-07-20T13:24:24Z",
+  "places": [
+    {
+      "placeId": "ChIJT5eL20-O44kRwmpfwmzo5d8",
+      "name": "Sudbury",
+      "languageCode": "en"
+    }
+  ],
+  "thumbnailUrl": "https://lh3.googleusercontent.com/p/AF1QipOfixkx5Pz-WjnK-b67pUnfa9GneffyG1hMQBMG",
+  "viewCount": "876",
+  "shareLink": "https://www.google.com/maps/@42.3983942,-71.4422206,3a,75y/data=!3m4!1e1!3m2!1sAF1QipOfixkx5Pz-WjnK-b67pUnfa9GneffyG1hMQBMG!2e10",
+  "transferStatus": "NEVER_TRANSFERRED",
+  "mapsPublishStatus": "PUBLISHED",
+  "uploadTime": "2021-08-12T17:00:00Z"
+}

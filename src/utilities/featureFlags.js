@@ -1,4 +1,8 @@
 export const initFeatureFlags = {
+	HIDE_HASH_ERROR: {
+		description: 'Suppress hash load error',
+		isEnabled: false,
+	},
 	MODAL_TEST: {
 		description: 'Add a button to the Utility Bar to test the Modal component',
 		isEnabled: false,
@@ -20,7 +24,7 @@ export function clear(){
 };
 
 export function isEnabled(name) {
-	const { isEnabled } = get(name);
+	const { isEnabled = false } = get(name) ?? {};
 	return isEnabled;
 }
 
@@ -54,6 +58,14 @@ export function initializeFeatureFlags(override = null) {
 	} else {
 		let featureFlags = deserialize();
 		const newFeatureFlags = { ...flagsToInitialize, ...featureFlags };
+
+		Object.keys(featureFlags).forEach((localFeatureFlag) => {
+			if (!FEATURE_FLAGS[localFeatureFlag]) {
+				delete newFeatureFlags[localFeatureFlag];
+				console.info(`Removed feature flag ${localFeatureFlag}`);
+			}
+		});
+
 		serialize(newFeatureFlags);
 	}
 	
@@ -61,10 +73,8 @@ export function initializeFeatureFlags(override = null) {
 		const flagDescription = flagsToInitialize[flagName].description;
 
 		a[flagDescription] = {
-			disable: (forceReload) => { set(flagName, false); if (forceReload) window.location.reload(); },
-			enable: (forceReload) => { set(flagName, true); if (forceReload) window.location.reload(); },
+			toggle: (forceReload) => { set(flagName, !isEnabled(flagName)); if (forceReload) window.location.reload(); },
 			isEnabled: () => isEnabled(flagName),
-			remove: (forceReload) => { remove(flagName); if (forceReload) window.location.reload(); },
 		};
 		
 		return a;
@@ -72,6 +82,7 @@ export function initializeFeatureFlags(override = null) {
 	
 	window.SVM = {
 		featureFlags: init,
+		openApiRef: () => window.open('https://developers.google.com/streetview/publish/reference/rest', '_blank')
 	};
 }
 

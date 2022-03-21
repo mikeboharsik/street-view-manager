@@ -7,6 +7,8 @@ import { ACTIONS } from '../GlobalState/reducers/global';
 
 import { selectFetcher, selectMeta } from '../GlobalState/selectors';
 
+import { FEATURE_FLAGS, getFeatureFlag } from '../../utilities';
+
 export default function useGitHash() {
 	const { dispatch, state } = useContext(GlobalState);
 
@@ -25,7 +27,10 @@ export default function useGitHash() {
 				} catch(e) {
 					console.error(e);
 			
-					toast(`Failed to load git hash: ${e.message}`, { type: 'error' });
+					const ff = getFeatureFlag(FEATURE_FLAGS.HIDE_HASH_ERROR);
+					if (!ff) {
+						toast(`Failed to load git hash: ${e.message}`, { type: 'error' });
+					}
 				} finally {
 					dispatch({ payload: { inProgress: false, type: 'gitHash' }, type: ACTIONS.SET_FETCHER });
 				}
