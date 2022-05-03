@@ -1,12 +1,20 @@
-#thumbnails-container {
-	align-content: center;
-	column-gap: 2em;
-	justify-content: center;
-	display: grid;
-	grid-template-columns: 25% 25% 25%;
-	grid-template-rows: 25% 25% 25%;
-	position: relative;
-	row-gap: 3em;
+
+@media (min-width: 800px) {
+	#thumbnails-container {
+		column-gap: 2em;
+		grid-template-columns: 25% 25% 25%;
+		grid-template-rows: 25% 25% 25%;
+		row-gap: 3em;
+	}
+}
+
+@media (max-width: 799px) {
+	#thumbnails-container {
+		grid-template-columns: 75%;
+		height: 80%;
+		overflow-y: scroll;
+		row-gap: 2em;
+	}
 }
 
 .invisible {
@@ -14,4 +22,11 @@
 	opacity: 0;
 	user-select: none;
 	pointer-events: none;
+}
+
+#thumbnails-container {
+	align-content: center;
+	display: grid;
+	justify-content: center;
+	position: relative;
 }

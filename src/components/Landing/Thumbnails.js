@@ -12,7 +12,12 @@ export default function Thumbnails() {
 	const { state } = useContext(GlobalState);
 
 	const { inProgress } = selectFetcher(state, 'photos');
-	const { currentPage, photos, photosPerPage } = selectUploads(state);
+	const { currentPage, photos } = selectUploads(state);
+	let { photosPerPage } = selectUploads(state);
+
+	if (window.innerWidth < 800) {
+		photosPerPage = 3;
+	}
 
 	const [renderedPhotos, setRenderedPhotos] = useState(null);
 
