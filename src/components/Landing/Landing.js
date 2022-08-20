@@ -47,7 +47,7 @@ export default function Landing() {
 				</div>
 				<br />
 				<div>
-					<a data-cy="link-grant-access" href={authUri}>
+					<a data-cy="link-grant-access" href={authUri} target="_blank">
 						Click here to grant permission
 					</a>
 				</div>
