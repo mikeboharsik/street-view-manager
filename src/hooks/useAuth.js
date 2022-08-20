@@ -4,7 +4,6 @@ import { useHistory } from 'react-router';
 import checkAccessToken from '../utilities/checkAccessToken';
 
 import { ACTIONS } from '../components/GlobalState/reducers/global';
-import { getAuthUri } from '../utilities';
 
 export default function useAuth(dispatch, state) {
 	const history = useHistory();
@@ -13,16 +12,6 @@ export default function useAuth(dispatch, state) {
 	useEffect(() => {
 		if (state.isAuthed === null) {
 			const haveAccessToken = checkAccessToken();
-
-			if (!haveAccessToken) {
-				if (localStorage.getItem('userIsLoggedIn') === 'true') {
-					window.location.href = getAuthUri();
-				}
-
-				if (pathname !== '/') {
-					history.replace('/');
-				}
-			}
 	
 			dispatch({ payload: { isAuthed: haveAccessToken }, type: ACTIONS.SET_ISAUTHED });
 

@@ -62,7 +62,6 @@ export function initializeFeatureFlags(override = null) {
 		Object.keys(featureFlags).forEach((localFeatureFlag) => {
 			if (!FEATURE_FLAGS[localFeatureFlag]) {
 				delete newFeatureFlags[localFeatureFlag];
-				console.info(`Removed feature flag ${localFeatureFlag}`);
 			}
 		});
 

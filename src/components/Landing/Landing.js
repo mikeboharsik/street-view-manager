@@ -1,10 +1,10 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import GlobalState from '../GlobalState';
 import getPhotos from './getPhotos';
 import { useIsAuthed } from '../../hooks';
-import { getAuthUri } from '../../utilities';
+import { initiateAuthenticationFlow } from '../../utilities';
 
 import { PhotosNav, Thumbnails } from '.';
 
@@ -20,12 +20,25 @@ function AddPhotosLink() {
 	);
 }
 
+function handleAuthenticationClick(...args) {
+	initiateAuthenticationFlow(...args);
+}
+
 export default function Landing() {
 	const isAuthed = useIsAuthed();
 
 	const { dispatch, state } = useContext(GlobalState);
 
+	const [authInterval, setAuthInterval] = useState(null);
+	const authIntervalRef = useRef(null);
+
 	const { inProgress } = selectFetcher(state, 'photos');
+
+	useEffect(() => {
+		authIntervalRef.current = authInterval
+	});
+
+	const handleAuthenticationClickArgs = { authIntervalRef, dispatch, setAuthInterval };
 
 	useEffect(() => {
 		if (dispatch && isAuthed && inProgress === null) {
@@ -38,8 +51,6 @@ export default function Landing() {
 	}
 
 	if (isAuthed === false) {
-		const authUri = getAuthUri();
-
 		return (
 			<>
 				<div style={{ width: '25%', textAlign: 'center' }}>
@@ -47,9 +58,13 @@ export default function Landing() {
 				</div>
 				<br />
 				<div>
-					<a data-cy="link-grant-access" href={authUri} target="_blank">
+					<span
+						data-cy="link-grant-access"
+						onClick={() => handleAuthenticationClick({ ...handleAuthenticationClickArgs })}
+						style={{ cursor: 'pointer', textDecoration: 'underline' }}
+					>
 						Click here to grant permission
-					</a>
+					</span>
 				</div>
 			</>
 		);

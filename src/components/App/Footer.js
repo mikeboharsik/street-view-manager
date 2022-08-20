@@ -34,6 +34,10 @@ export default function Footer() {
 		}
 	}, [setUserWasWarned, userWasWarned]);
 
+	if (window.location.pathname === '/oauth') {
+		return null;
+	}
+
 	return (
 		<div id="footer-container">
 			<div id="footer-links-container">

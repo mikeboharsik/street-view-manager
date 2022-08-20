@@ -8,7 +8,7 @@ describe('Landing page', () => {
 			cy.visit('http://localhost:3000');
 
 			cy.contains('This application needs your permission to access the Street View content associated with your Google account');
-			cy.get('[data-cy="link-grant-access"]').should('have.attr', 'href');
+			cy.get('[data-cy="link-grant-access"]').should('exist');
 
 			cy.get('#loader-container').should('not.exist');
 
