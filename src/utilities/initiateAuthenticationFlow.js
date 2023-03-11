@@ -21,7 +21,7 @@ export function initiateAuthenticationFlow({ authIntervalRef, dispatch, setAuthI
 
 				setCookie('access_token', newToken, expires.toUTCString());
 
-				dispatch?.({ payload: { isAuthed: true }, type: ACTIONS.SET_ISAUTHED });
+				dispatch({ payload: { isAuthed: true }, type: ACTIONS.SET_ISAUTHED });
 			}
 
 			clearInterval(interval);

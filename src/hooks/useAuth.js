@@ -12,7 +12,10 @@ export default function useAuth(dispatch, state) {
 	useEffect(() => {
 		if (state.isAuthed === null) {
 			const haveAccessToken = checkAccessToken();
-	
+			if (!haveAccessToken) {
+				
+			}
+
 			dispatch({ payload: { isAuthed: haveAccessToken }, type: ACTIONS.SET_ISAUTHED });
 
 			if (haveAccessToken) {
