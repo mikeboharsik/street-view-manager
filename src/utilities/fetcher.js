@@ -34,7 +34,9 @@ export function verifyBodyIsString(body) {
 		return body;
 	}
 
-	return JSON.stringify(body);
+	const str = JSON.stringify(body);
+
+	return str.replace(/"NaN"/g, 'null');
 }
 
 export default function fetcher(action, args = {}) {

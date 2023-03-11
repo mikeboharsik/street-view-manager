@@ -2,10 +2,13 @@ import { useContext, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
+import { toast } from 'react-toastify';
+
 import GlobalState from '../GlobalState';
 
 import { selectMultiselect, selectPhotos } from '../GlobalState/selectors';
 import { ACTIONS } from '../GlobalState/reducers/global';
+import { fetcher, ACTIONS as FETCHER_ACTIONS, stringToPlaceId } from '../../utilities';
 
 import './PhotoPlaces.css';
 
@@ -23,7 +26,7 @@ export default function PhotoPlaces() {
 
 	const selectedPhotos = selectPhotos(state).filter((p) => idsToUpdate.includes(p.photoId.id));
 	const commonPlaces = selectedPhotos.reduce((acc, cur) => {
-		cur.places.forEach(place => {
+		cur.places?.forEach(place => {
 			const { placeId } = place;
 			if (!acc.find(e => e.placeId === placeId)) {
 				acc.push(place);
@@ -39,10 +42,20 @@ export default function PhotoPlaces() {
 	}
 
 	const onSubmit = async (inputs) => {
-		console.log({ selectedPhotos });
-		console.log({ idsToUpdate, inputs });
+		const allPlaces = Object.keys(inputs).map((inputName) => ({ placeId: stringToPlaceId(state, inputs[inputName])}));
+		
+		const updateMask = 'places,pose.heading,pose.latLngPair,pose.altitude,pose.heading,pose.level';
+		const body = { updatePhotoRequests: selectedPhotos.map((photo) => ({ photo: { photoId: photo.photoId, places: allPlaces, pose: photo.pose }, updateMask })) };
+		try {
+			await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
 
-		dispatch({ payload: { form: null }, type: ACTIONS.SET_MODAL });
+			dispatch({ payload: { form: null }, type: ACTIONS.SET_MODAL });
+
+			toast('Success! Bear in mind that it may take a minute or two for the photo cache to update');
+		} catch (e) {
+			toast(`Failed to update photos: ${e.message}`, { type: 'error' });
+			console.error(e);
+		}
 	};
 
 	return (
