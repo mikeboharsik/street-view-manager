@@ -1,11 +1,11 @@
 export default function stringToPlaceId(state, str) {
 	const { uploads: { places: knownPlaces } } = state;
 
-	let place = knownPlaces[str];
-	if (place) return place;
+	const place = knownPlaces[str];
+	if (place) return place.placeId;
 
 	const placeKeys = Object.keys(knownPlaces);
-	place = placeKeys.find((key) => knownPlaces[key].name === str);
+	const placeId = placeKeys.find((key) => knownPlaces[key].name === str);
 
-	return place ?? str;
+	return placeId ?? str;
 }

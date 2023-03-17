@@ -43,11 +43,24 @@ export default function PhotoPlaces() {
 
 	const onSubmit = async (inputs) => {
 		const allPlaces = Object.keys(inputs).map((inputName) => ({ placeId: stringToPlaceId(state, inputs[inputName])}));
-		
-		const updateMask = 'places,pose.heading,pose.latLngPair,pose.altitude,pose.heading,pose.level';
-		const body = { updatePhotoRequests: selectedPhotos.map((photo) => ({ photo: { photoId: photo.photoId, places: allPlaces, pose: photo.pose }, updateMask })) };
+
+		const updateMask = 'places';
+		const body = {
+			updatePhotoRequests: selectedPhotos.map((photo) => ({
+				photo: {
+					photoId: photo.photoId,
+					places: allPlaces,
+					updateMask,
+				}
+			}))
+		};
+
 		try {
-			await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
+			const result = await fetcher(FETCHER_ACTIONS.UPDATE_PHOTOS, { body });
+			if (!result.ok) {
+				const { error: { message } } = await result.json();
+				throw new Error(message);
+			}
 
 			dispatch({ payload: { form: null }, type: ACTIONS.SET_MODAL });
 
