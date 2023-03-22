@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 import updatePhoto from './updatePhoto';
 
 export default async function updateConnections(dispatch, curPhoto, connectionsInput) {
@@ -15,12 +17,14 @@ export default async function updateConnections(dispatch, curPhoto, connectionsI
 	updatedPhoto.connections = newConnections;
 
 	const options = { body: updatedPhoto, photoId, query: { updateMask: 'connections' } };
+	delete options.body.pose.level; // fix API complaining about this being an empty object :\
 
 	try {
 		await updatePhoto(dispatch, options);
 
-		connectionsInput.current.value = 'OK';
+		toast('Updated connections!', { type: 'success' });
+		connectionsInput.current.value = '';
 	} catch(e) {
-		connectionsInput.current.value = `ERROR: ${e}`;
+		toast(e.message, { type: 'error' });
 	}
 }

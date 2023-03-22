@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 import updatePhoto from './updatePhoto';
 
 export default async function updateAltitude(dispatch, curPhoto, altitudeInput) {
@@ -6,12 +8,14 @@ export default async function updateAltitude(dispatch, curPhoto, altitudeInput) 
 	pose.altitude = parseFloat(newAltitude);
 
 	const options = { body: curPhoto, photoId, query: { updateMask: 'pose.latLngPair,pose.altitude' } };
+	delete options.body.pose.level; // fix API complaining about this being an empty object :\
 
 	try {
 		await updatePhoto(dispatch, options);
 
-		altitudeInput.current.value = 'OK';
+		toast('Success!', { type: 'success' });
+		altitudeInput.current.value = '';
 	} catch(e) {
-		altitudeInput.current.value = `ERROR: ${e}`;
+		toast(e.message, { type: 'error' });
 	}
 }

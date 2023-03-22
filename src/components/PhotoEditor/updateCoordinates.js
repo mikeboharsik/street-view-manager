@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 import updatePhoto from './updatePhoto';
 
 export default async function updateCoordinates(dispatch, curPhoto, coordinatesInput) {
@@ -10,12 +12,14 @@ export default async function updateCoordinates(dispatch, curPhoto, coordinatesI
 	latLngPair.longitude = lng;
 
 	const options = { body: curPhoto, photoId, query: { updateMask: 'pose.latLngPair' } };
+	delete options.body.pose.level; // fix API complaining about this being an empty object :\
 
 	try {
 		await updatePhoto(dispatch, options);
 
-		coordinatesInput.current.value = 'OK';
+		toast('Updated coordinates!', { type: 'success' });
+		coordinatesInput.current.value = '';
 	} catch(e) {
-		coordinatesInput.current.value = `ERROR: ${e}`;
+		toast(e.message, { type: 'error' });
 	}
 }
