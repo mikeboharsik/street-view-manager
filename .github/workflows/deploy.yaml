@@ -1,0 +1,53 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - '.github/workflows/**'
+      - 'client/src/**'
+      - 'server/src/**'
+  workflow_dispatch:
+    inputs:
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+jobs:
+  aws_deploy:
+    env:
+      IS_PRODUCTION: ${{ github.ref_name == 'main' }}
+    name: Push to AWS
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout street-view-manager
+      uses: actions/checkout@v3
+      with:
+        ref: develop
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 16.19.1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-region: us-east-1
+        role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+    - name: Azure PowerShell Action
+      uses: Azure/powershell@v1
+      with:
+        inlineScript: |
+          $isProduction = $ENV:GITHUB_REF_NAME -eq 'main'
+          
+          $clientId = $isProduction ? '${{ vars.PROD_APP_CLIENT_ID }}' : '${{ vars.DEV_APP_CLIENT_ID }}'
+          $appKey = $isProduction ? '${{ vars.PROD_APP_KEY }}' : '${{ vars.DEV_APP_KEY }}'
+          $lambdaFunctionName = $isProduction ? '${{ vars.PROD_LAMBDA_FUNCTION_NAME }}' : '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}'
+
+          npm install -g yarn
+
+          Push-Location ./server
+          ./Invoke-UploadStreetViewManager.ps1 -AppClientId $clientId -AppKey $appKey -LambdaFunctionName $lambdaFunctionName
+          Pop-Location
+        azPSVersion: latest
