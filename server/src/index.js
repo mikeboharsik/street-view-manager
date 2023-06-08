@@ -89,7 +89,9 @@ exports.handler = async event => {
         if (handler) {
             console.log(`Using handler '${JSON.stringify(handler)}' for path '${event.rawPath}'`);
             
-            return handler.action(event);
+            const result = await handler.action(event);
+
+            return { ...result, headers: { ...result.headers, 'cache-control': `max-age=${31_536_000}` } };
         }
         
         return {

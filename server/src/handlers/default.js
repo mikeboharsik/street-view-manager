@@ -46,7 +46,6 @@ const defaultGetHandler = {
         return {
             statusCode: 200,
             headers: {
-                'cache-control': 'no-store',
                 'content-type': 'text/html',
             },
             body: await fs.readFile('./build/index.html', 'utf8'),

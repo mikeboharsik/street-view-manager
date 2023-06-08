@@ -17,8 +17,6 @@ permissions:
 
 jobs:
   aws_deploy:
-    env:
-      IS_PRODUCTION: ${{ github.ref_name == 'main' }}
     name: Push to AWS
     runs-on: ubuntu-latest
     steps:
@@ -44,10 +42,11 @@ jobs:
           $clientId = $isProduction ? '${{ vars.PROD_APP_CLIENT_ID }}' : '${{ vars.DEV_APP_CLIENT_ID }}'
           $appKey = $isProduction ? '${{ vars.PROD_APP_KEY }}' : '${{ vars.DEV_APP_KEY }}'
           $lambdaFunctionName = $isProduction ? '${{ vars.PROD_LAMBDA_FUNCTION_NAME }}' : '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}'
+          $cloudFrontDistributionId = $isProduction ? '${{ vars.PROD_CLOUDFRONT_DISTRIBUTION_ID }}' : '${{ vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}'
 
           npm install -g yarn
 
           Push-Location ./server
-          ./Invoke-UploadStreetViewManager.ps1 -AppClientId $clientId -AppKey $appKey -LambdaFunctionName $lambdaFunctionName
+          ./Invoke-UploadStreetViewManager.ps1 -AppClientId $clientId -AppKey $appKey -LambdaFunctionName $lambdaFunctionName -CloudFrontDistributionID $cloudFrontDistributionId
           Pop-Location
         azPSVersion: latest

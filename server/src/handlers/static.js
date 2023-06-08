@@ -17,7 +17,6 @@ const staticGetHandler = {
         return {
             statusCode: 200,
             headers: {
-                'cache-control': 'no-store',
                 'content-type': contentType,
             },
             body: await fs.readFile(`./build${rawPath}`, 'utf8'),
