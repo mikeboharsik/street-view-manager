@@ -15,22 +15,22 @@ Param(
 	[string] $CloudFrontDistributionID,
 
 	[Parameter(Mandatory=$false)]
-	[string[]] $CloudFrontInvalidationPaths = @('/*'),
+	[string[]] $CloudFrontInvalidationPaths = @("/*"),
 
 	[switch] $Prod,
 	[switch] $SkipTests
 )
 
-Write-Host "`$ClientPath = $ClientPath"
+Write-Host "`$ClientPath = [$ClientPath]"
 
-Write-Host "`$AppClientId = $AppClientId"
-Write-Host "`$AppKey = $AppKey"
-Write-Host "`$LambdaFunctionName = $LambdaFunctionName"
-Write-Host "`$CloudFrontDistributionID = $CloudFrontDistributionID"
-Write-Host "`$CloudFrontInvalidationPaths = $CloudFrontInvalidationPaths"
+Write-Host "`$AppClientId = [$AppClientId]"
+Write-Host "`$AppKey = [$AppKey]"
+Write-Host "`$LambdaFunctionName = [$LambdaFunctionName]"
+Write-Host "`$CloudFrontDistributionID = [$CloudFrontDistributionID]"
+Write-Host "`$CloudFrontInvalidationPaths = [$CloudFrontInvalidationPaths]"
 
 $stagingPath = "$PSScriptRoot\build\staging"
-Write-Host "`$stagingPath = '$stagingPath'"
+Write-Host "`$stagingPath = [$stagingPath]"
 
 if (!$AppClientId) {
 	throw "Missing clientId: [$AppClientId]"
@@ -96,12 +96,12 @@ Write-Host "`$clientGitHash=[$clientGitHash]"
 Pop-Location
 
 $clientBuildPath = "$ClientPath/build"
-Write-Host "`$clientBuildPath = '$clientBuildPath'"
+Write-Host "`$clientBuildPath = [$clientBuildPath]"
 Copy-Item -Recurse $clientBuildPath "$stagingPath/build"
 
 yarn
 $lambdaPath = $PSScriptRoot
-Write-Host "`$lambdaPath = '$lambdaPath'"
+Write-Host "`$lambdaPath = [$lambdaPath]"
 Copy-Item -Recurse "$lambdaPath/src/**" $stagingPath
 Copy-Item -Recurse "$lambdaPath/node_modules" $stagingPath
 
@@ -117,7 +117,7 @@ Write-Host "Lambda function [$LambdaFunctionName] updated"
 
 Write-Host "Invalidating CloudFront distribution [$CloudFrontDistributionID] paths [$CloudFrontInvalidationPaths]"
 
-$result = aws cloudfront create-invalidation --distribution-id $CloudFrontDistributionID --paths $CloudFrontInvalidationPaths
+$result = aws cloudfront create-invalidation --distribution-id $CloudFrontDistributionID --paths "$CloudFrontInvalidationPaths"
 Write-Host ($result | ConvertFrom-Json | ConvertTo-Json -Depth 10)
 
 Write-Host "CloudFront distribution cache invalidated"
