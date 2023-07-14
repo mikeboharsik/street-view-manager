@@ -32,7 +32,12 @@ export default function PhotoUploader() {
 	const [uploadProgress, setUploadProgress] = useState({});
 
 	function handleFilesChange(e) {
-		const newFiles = Array.from(e.target.files);
+		let newFiles = Array.from(e.target.files);
+
+		if (newFiles.length > 9) {
+			toast('Only 9 images are supported simultaneously at the moment', { type: 'info' });
+			newFiles = newFiles.slice(0, 9);
+		}
 		
 		newFiles.forEach((file) => file.localUrl = URL.createObjectURL(file));
 

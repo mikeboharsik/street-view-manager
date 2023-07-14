@@ -49,7 +49,8 @@ function UploadPreview({ file, uploadProgress }) {
 
 	return (
 		<div key={file.name} className="uploader-image-preview-container">
-			<PanoramaViewer file={file} onChange={onCameraChange} />
+			{/*<PanoramaViewer file={file} onChange={onCameraChange} />*/}
+			<img width={300} height={150} src={file.localUrl}></img>
 			<div className="uploader-image-preview-container-image-overlay">
 				<span className="uploader-image-preview-container-image-overlay-filename">
 					<p>{file.name}</p>

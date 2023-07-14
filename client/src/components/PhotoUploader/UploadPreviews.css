@@ -1,11 +1,17 @@
 #uploader-image-previews-container {
-	display: flex;
+	display: grid;
+	grid-template-columns: 300px 300px 300px;
+	column-gap: 10px;
+	row-gap: 10px;
 	margin: 0;
-	padding: 0;
+	overflow: auto;
+	padding: 3em 0 3em 0;
 	position: relative;
 }
 
 .uploader-image-preview-container {
+	border: 1px solid #ccc;
+	justify-content: center;
 	display: flex;
 	margin: 0;
 	padding: 0;
