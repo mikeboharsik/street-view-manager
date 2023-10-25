@@ -1,4 +1,6 @@
+/*
 import PanoramaViewer from '../PanoramaViewer/PanoramaViewer';
+*/
 
 import './UploadPreviews.css';
 
@@ -34,6 +36,7 @@ function getColorFromStatus(status) {
 	}
 }
 
+/*
 function onCameraChange(cam) {
 	// North is -90 (-1.57) on the Y
 
@@ -41,6 +44,7 @@ function onCameraChange(cam) {
 
 	[x, y, z] = [x * (180 / Math.PI), y * (180 / Math.PI), z * (180 / Math.PI)];
 }
+*/
 
 function UploadPreview({ file, uploadProgress }) {
 	const { status } = uploadProgress[file];
@@ -50,7 +54,7 @@ function UploadPreview({ file, uploadProgress }) {
 	return (
 		<div key={file.name} className="uploader-image-preview-container">
 			{/*<PanoramaViewer file={file} onChange={onCameraChange} />*/}
-			<img width={300} height={150} src={file.localUrl}></img>
+			<img width={300} height={150} src={file.localUrl} alt="Photosphere preview"></img>
 			<div className="uploader-image-preview-container-image-overlay">
 				<span className="uploader-image-preview-container-image-overlay-filename">
 					<p>{file.name}</p>
