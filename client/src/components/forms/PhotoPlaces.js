@@ -50,8 +50,8 @@ export default function PhotoPlaces() {
 				photo: {
 					photoId: photo.photoId,
 					places: allPlaces,
-					updateMask,
-				}
+				},
+				updateMask,
 			}))
 		};
 
