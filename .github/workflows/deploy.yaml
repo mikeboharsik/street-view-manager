@@ -33,20 +33,18 @@ jobs:
       with:
         aws-region: us-east-1
         role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-    - name: Azure PowerShell Action
-      uses: Azure/powershell@v1
-      with:
-        inlineScript: |
-          $isProduction = $ENV:GITHUB_REF_NAME -eq 'main'
-          
-          $clientId = $isProduction ? '${{ vars.PROD_APP_CLIENT_ID }}' : '${{ vars.DEV_APP_CLIENT_ID }}'
-          $appKey = $isProduction ? '${{ vars.PROD_APP_KEY }}' : '${{ vars.DEV_APP_KEY }}'
-          $lambdaFunctionName = $isProduction ? '${{ vars.PROD_LAMBDA_FUNCTION_NAME }}' : '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}'
-          $cloudFrontDistributionId = $isProduction ? '${{ vars.PROD_CLOUDFRONT_DISTRIBUTION_ID }}' : '${{ vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}'
+    - name: Invoke PowerShell scripts
+      shell: pwsh
+      run: |
+        $isProduction = $ENV:GITHUB_REF_NAME -eq 'main'
+        
+        $clientId = $isProduction ? '${{ vars.PROD_APP_CLIENT_ID }}' : '${{ vars.DEV_APP_CLIENT_ID }}'
+        $appKey = $isProduction ? '${{ vars.PROD_APP_KEY }}' : '${{ vars.DEV_APP_KEY }}'
+        $lambdaFunctionName = $isProduction ? '${{ vars.PROD_LAMBDA_FUNCTION_NAME }}' : '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}'
+        $cloudFrontDistributionId = $isProduction ? '${{ vars.PROD_CLOUDFRONT_DISTRIBUTION_ID }}' : '${{ vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}'
 
-          npm install -g yarn
+        npm install -g yarn
 
-          Push-Location ./server
-          ./Invoke-UploadStreetViewManager.ps1 -AppClientId $clientId -AppKey $appKey -LambdaFunctionName $lambdaFunctionName -CloudFrontDistributionID $cloudFrontDistributionId
-          Pop-Location
-        azPSVersion: latest
+        Push-Location ./server
+        ./Invoke-UploadStreetViewManager.ps1 -AppClientId $clientId -AppKey $appKey -LambdaFunctionName $lambdaFunctionName -CloudFrontDistributionID $cloudFrontDistributionId
+        Pop-Location
