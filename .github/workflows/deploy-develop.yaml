@@ -1,13 +1,8 @@
-name: Deploy
+name: Deploy develop
 on:
   push:
     branches:
       - develop
-      - main
-    paths:
-      - '.github/workflows/**'
-      - 'client/src/**'
-      - 'server/**'
   workflow_dispatch:
 
 concurrency:
@@ -41,10 +36,10 @@ jobs:
       run: |
         $isProduction = $ENV:GITHUB_REF_NAME -eq 'main'
         
-        $clientId = $isProduction ? '${{ vars.PROD_APP_CLIENT_ID }}' : '${{ vars.DEV_APP_CLIENT_ID }}'
-        $appKey = $isProduction ? '${{ vars.PROD_APP_KEY }}' : '${{ vars.DEV_APP_KEY }}'
-        $lambdaFunctionName = $isProduction ? '${{ vars.PROD_LAMBDA_FUNCTION_NAME }}' : '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}'
-        $cloudFrontDistributionId = $isProduction ? '${{ vars.PROD_CLOUDFRONT_DISTRIBUTION_ID }}' : '${{ vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}'
+        $clientId = '${{ vars.DEV_APP_CLIENT_ID }}'
+        $appKey = '${{ vars.DEV_APP_KEY }}'
+        $lambdaFunctionName = '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}'
+        $cloudFrontDistributionId = '${{ vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}'
 
         npm install -g yarn
 

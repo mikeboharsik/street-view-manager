@@ -1,0 +1,45 @@
+name: Deploy release
+on:
+  release:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+jobs:
+  aws_deploy:
+    name: Push to AWS
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout street-view-manager
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref }}
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 16.19.1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-region: us-east-1
+        role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+    - name: Invoke PowerShell scripts
+      shell: pwsh
+      run: |
+        $isProduction = $ENV:GITHUB_REF_NAME -eq 'main'
+        
+        $clientId = '${{ vars.PROD_APP_CLIENT_ID }}'
+        $appKey = '${{ vars.PROD_APP_KEY }}'
+        $lambdaFunctionName = '${{ vars.PROD_LAMBDA_FUNCTION_NAME }}'
+        $cloudFrontDistributionId = '${{ vars.PROD_CLOUDFRONT_DISTRIBUTION_ID }}'
+
+        npm install -g yarn
+
+        Push-Location ./server
+        ./Invoke-UploadStreetViewManager.ps1 -AppClientId $clientId -AppKey $appKey -LambdaFunctionName $lambdaFunctionName -CloudFrontDistributionID $cloudFrontDistributionId
+        Pop-Location
