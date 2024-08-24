@@ -53,29 +53,13 @@ Write-Host "`$env:REACT_APP_CLIENT_ID = [$env:REACT_APP_CLIENT_ID]"
 $env:REACT_APP_KEY = $AppKey
 Write-Host "`$env:REACT_APP_KEY = [$env:REACT_APP_KEY]"
 
-Push-Location $ClientPath
-
-yarn
-
-yarn test --watchAll=false --verbose
-if (!$?) {
-	Write-Error "Unit tests failed"
-	exit 1
-}
-
-yarn build
-Write-Host "Command 'yarn build' completed"
-
 $clientGitHash = $ENV:GITHUB_SHA
 Write-Host "`$clientGitHash=[$clientGitHash]"
-
-Pop-Location
 
 $clientBuildPath = "$ClientPath/build"
 Write-Host "`$clientBuildPath = [$clientBuildPath]"
 Copy-Item -Recurse $clientBuildPath "$stagingPath/build"
 
-yarn
 $lambdaPath = $PSScriptRoot
 Write-Host "`$lambdaPath = [$lambdaPath]"
 

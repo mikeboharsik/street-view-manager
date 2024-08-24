@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   aws_deploy:
-    name: Push to AWS
+    name: Deploy to AWS
     runs-on: ubuntu-latest
     steps:
     - name: Checkout street-view-manager
@@ -31,18 +31,50 @@ jobs:
       with:
         aws-region: us-east-1
         role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-    - name: Invoke PowerShell scripts
+    - name: Install yarn
+      shell: pwsh
+      run: npm install -g yarn
+    - name: Install client packages
       shell: pwsh
       run: |
-        $isProduction = $ENV:GITHUB_REF_NAME -eq 'main'
-        
-        $clientId = '${{ vars.DEV_APP_CLIENT_ID }}'
-        $appKey = '${{ vars.DEV_APP_KEY }}'
-        $lambdaFunctionName = '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}'
-        $cloudFrontDistributionId = '${{ vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}'
-
-        npm install -g yarn
-
+        Push-Location ./client
+        ./Invoke-InstallClientPackages.ps1
+        Pop-Location
+    - name: Run client unit tests
+      shell: pwsh
+      run: |
+        Push-Location ./client
+        ./Invoke-RunUnitTests.ps1
+        Pop-Location
+    #- name: Install cypress
+    #  uses: cypress-io/github-action@v6
+    #  with:
+    #    runTests: false
+    - name: Run client e2e tests
+      uses: cypress-io/github-action@v6
+      with:
+        project: ./client
+    - name: Build deployable client files
+      shell: pwsh
+      run: |
         Push-Location ./server
-        ./Invoke-UploadStreetViewManager.ps1 -AppClientId $clientId -AppKey $appKey -LambdaFunctionName $lambdaFunctionName -CloudFrontDistributionID $cloudFrontDistributionId
+        ./Invoke-BuildClient.ps1
+        Pop-Location
+    - name: Install server packages
+      shell: pwsh
+      run: |
+        Push-Location ./server
+        ./Invoke-InstallServerPackages.ps1
+        Pop-Location
+    - name: Upload to AWS lambda function
+      shell: pwsh
+      run: |
+        Push-Location ./server
+
+        ./Invoke-UploadStreetViewManager.ps1 `
+          -AppClientId '${{ vars.DEV_APP_CLIENT_ID }}' `
+          -AppKey '${{ vars.DEV_APP_KEY }}' `
+          -LambdaFunctionName '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}' `
+          -CloudFrontDistributionID '${{ vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}'
+
         Pop-Location
