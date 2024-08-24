@@ -63,30 +63,6 @@ if (!$?) {
 	exit 1
 }
 
-<#
-Start-Job { yarn start }
-$success = $false
-$attempts = 0
-while (!$success -and $attempts -lt 30) {
-	try {
-		$attempts += 1
-		Invoke-WebRequest 'http://localhost:3000'
-		$success = $true
-		break
-	} catch {}
-}
-if (!$success) {
-	Write-Error "Failed to start local server for integration tests"
-	exit 1
-}
-
-yarn cypress run --browser chrome
-if (!$?) {
-	Write-Error "Integration tests failed"
-	exit 1
-}
-#>
-
 yarn build
 Write-Host "Command 'yarn build' completed"
 
@@ -102,8 +78,9 @@ Copy-Item -Recurse $clientBuildPath "$stagingPath/build"
 yarn
 $lambdaPath = $PSScriptRoot
 Write-Host "`$lambdaPath = [$lambdaPath]"
-Copy-Item -Recurse "$lambdaPath/server/src/**" $stagingPath
-Copy-Item -Recurse "$lambdaPath/server/node_modules" $stagingPath
+
+Copy-Item -Recurse "$lambdaPath/src/**" $stagingPath
+Copy-Item -Recurse "$lambdaPath/node_modules" $stagingPath
 
 ConvertTo-Json -Depth 10 @{ client = $clientGitHash }
 	| Set-Content "$stagingPath/build/static/version.json"
