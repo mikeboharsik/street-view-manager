@@ -9,6 +9,7 @@ import { initiateAuthenticationFlow } from '../../utilities';
 import { PhotosNav, Thumbnails } from '.';
 
 import selectFetcher from '../GlobalState/selectors/selectFetcher';
+import selectAuthFlow from '../GlobalState/selectors/selectAuthFlow';
 
 import './Landing.css';
 
@@ -33,6 +34,7 @@ export default function Landing() {
 	const authIntervalRef = useRef(null);
 
 	const { inProgress } = selectFetcher(state, 'photos');
+	const authFlow = selectAuthFlow(state);
 
 	useEffect(() => {
 		authIntervalRef.current = authInterval
@@ -51,23 +53,41 @@ export default function Landing() {
 	}
 
 	if (isAuthed === false) {
-		return (
-			<>
-				<div style={{ width: '25%', textAlign: 'center' }}>
-					This application needs your permission to access the Street View content associated with your Google account
-				</div>
-				<br />
-				<div>
-					<span
-						data-cy="link-grant-access"
-						onClick={() => handleAuthenticationClick({ ...handleAuthenticationClickArgs })}
-						style={{ cursor: 'pointer', textDecoration: 'underline' }}
-					>
-						Click here to grant permission
-					</span>
-				</div>
-			</>
-		);
+		switch (authFlow.inProgress) {
+			case null: {
+				return (
+					<>
+						<div style={{ width: '25%', textAlign: 'center' }}>
+							This application needs your permission to access the Street View content associated with your Google account
+						</div>
+						<br />
+						<div>
+							<span
+								data-cy="link-grant-access"
+								onClick={() => handleAuthenticationClick({ ...handleAuthenticationClickArgs })}
+								style={{ cursor: 'pointer', textDecoration: 'underline' }}
+							>
+								Click here to grant permission
+							</span>
+						</div>
+					</>
+				);
+			}
+			case true: {
+				return (
+					<>
+						<div>
+							<span>
+								Authenticating...
+							</span>
+						</div>
+					</>
+				);
+			}
+			default: {
+				return null;
+			}
+		}
 	}
 
 	return (

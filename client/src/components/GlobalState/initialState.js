@@ -1,4 +1,8 @@
 const initialState = {
+	authFlow: {
+		inProgress: null,
+		error: null,
+	},
 	fetcher: {
 		gitHash: {
 			inProgress: null,

@@ -4,6 +4,8 @@ const photosStore = localforage.createInstance({ name: 'photos-v1' });
 
 export const ACTIONS = {
 	ADD_PHOTOS: 'ADD_PHOTOS',
+	AUTH_FLOW_END: 'AUTH_FLOW_END',
+	AUTH_FLOW_START: 'AUTH_FLOW_START',
 	CLEAR_MULTISELECT: 'CLEAR_MULTISELECT',
 	DECREMENT_CURRENTPAGE: 'DECREMENT_CURRENTPAGE',
 	DELETE_PHOTOS: 'DELETE_PHOTOS',
@@ -76,6 +78,24 @@ export default function globalReducer(state, action) {
 			}, {});
 
 			return { ...state, uploads: newUploads };
+		}
+
+		case ACTIONS.AUTH_FLOW_END: {
+			const newAuthFlow = { ...state.authFlow };
+			newAuthFlow.inProgess = false;
+
+			const { error } = payload;
+			if (error) { newAuthFlow.inProgress = null; newAuthFlow.error = error }
+
+			return { ...state, authFlow: newAuthFlow };
+		}
+
+		case ACTIONS.AUTH_FLOW_START: {
+			const newAuthFlow = { ...state.authFlow };
+
+			newAuthFlow.inProgress = true;
+
+			return { ...state, authFlow: newAuthFlow };
 		}
 
 		case ACTIONS.CLEAR_MULTISELECT: {
