@@ -110,6 +110,8 @@ describe('Landing page', () => {
 		
 				cy.get('#thumbnails-container').should('exist');
 				cy.get('#photos-nav-container').should('exist');
+
+				cy.get('.thumbnail-overlay-container').should('exist');
 			});
 		});
 	});
