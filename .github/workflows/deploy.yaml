@@ -9,7 +9,6 @@ on:
       - 'client/src/**'
       - 'server/**'
   workflow_dispatch:
-    inputs:
 
 permissions:
   id-token: write # This is required for requesting the JWT
