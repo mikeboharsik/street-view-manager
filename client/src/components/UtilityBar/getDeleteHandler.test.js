@@ -20,7 +20,36 @@ describe('handleDelete', () => {
 		expect(dispatchMock).not.toHaveBeenCalled();
 	});
 
-	it('calls dispatch with multiselect ids' , async () => {
+	it('does not call dispatch with multiselect ids when NOT confirmed' , async () => {
+		window.confirm = jest.fn(() => false);
+
+		const photos = [
+			{ photoId: { id: 'photo1' } },
+			{ photoId: { id: 'photo2' } },
+			{ photoId: { id: 'photo3' } },
+		];
+		const selectedIds = ['photo1', 'photo2'];
+		const initState = {
+			...initialState,
+			uploads: {
+				...initialState.uploads,
+				multiselect: {
+					ids: selectedIds,
+				},
+				photos,
+			},
+		};
+
+		const handleDelete = getDeleteHandler(dispatchMock, initState);
+
+		await handleDelete();
+
+		expect(dispatchMock).not.toHaveBeenCalled();
+	});
+
+	it('calls dispatch with multiselect ids when confirmed' , async () => {
+		window.confirm = jest.fn(() => true);
+
 		const photos = [
 			{ photoId: { id: 'photo1' } },
 			{ photoId: { id: 'photo2' } },
