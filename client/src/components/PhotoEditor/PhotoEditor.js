@@ -59,7 +59,7 @@ export default function PhotoEditor({ match }) {
 
 		return (
 			<div id="editor">
-				<div className="header">
+				<div className="header" data-testid="editor-header">
 					Editor
 				</div>
 

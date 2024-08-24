@@ -63,7 +63,7 @@ export default function Landing() {
 						<br />
 						<div>
 							<span
-								data-cy="link-grant-access"
+								data-testid="link-grant-access"
 								onClick={() => handleAuthenticationClick({ ...handleAuthenticationClickArgs })}
 								style={{ cursor: 'pointer', textDecoration: 'underline' }}
 							>
@@ -92,7 +92,7 @@ export default function Landing() {
 
 	return (
 		<>
-			<div className="header">
+			<div className="header" data-testid="landing-header">
 				<span>
 					Photos
 					<AddPhotosLink />

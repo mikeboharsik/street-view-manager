@@ -39,7 +39,7 @@ export default function Footer() {
 	}
 
 	return (
-		<div id="footer-container">
+		<div id="footer-container" data-testid="footer-container">
 			<div id="footer-links-container">
 				<GitHashLink />
 				<span>

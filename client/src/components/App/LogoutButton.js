@@ -15,7 +15,7 @@ export default function LogoutButton() {
 	if (isAuthed) {
 		return (
 			<span
-				data-cy="logout-button"
+				data-testid="logout-button"
 				id="logout-button"
 				onClick={clickHandler}
 				title="Log Out"

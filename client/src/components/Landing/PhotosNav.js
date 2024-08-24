@@ -67,7 +67,7 @@ export default function PhotosNav() {
 	const rightRightHandler = () => dispatch({ type: ACTIONS.SET_CURRENTPAGE_LAST });
 
 	return (
-		<div id="photos-nav-container">
+		<div id="photos-nav-container" data-testid="photos-nav-container">
 			<NavButton char={'<<'} id="navigateLeftLeft" isHidden={hideLeftLeft} onClick={leftLeftHandler} />
 			<NavButton char={'<'} id="navigateLeft" isHidden={hideLeft} onClick={leftHandler} />
 			<PageIndicator currentPageNav={currentPageNav} pageCountNav={pageCount} photos={photos} />

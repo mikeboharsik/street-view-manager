@@ -48,7 +48,7 @@ export default function Thumbnails() {
 			}
 		}
 
-		return <div id="thumbnails-container">{thumbnails}</div>;
+		return <div id="thumbnails-container" data-testid="thumbnails-container">{thumbnails}</div>;
 	}
 
 	return null;

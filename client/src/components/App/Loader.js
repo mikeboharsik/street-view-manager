@@ -10,7 +10,7 @@ export default function Loader() {
 
   if (showLoader) {
     return (
-      <div id="loader-container">
+      <div id="loader-container" data-testid="loader-container">
         <PulseLoader color="white" />
       </div>
     );

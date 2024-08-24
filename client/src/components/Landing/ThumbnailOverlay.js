@@ -15,7 +15,7 @@ export default function ThumbnailOverlay({ photo }) {
 	const captureTimeDate = new Date(captureTime).toLocaleString();
 
 	return (
-		<div className="thumbnail-overlay-container">
+		<div className="thumbnail-overlay-container" data-testid="thumbnail-overlay-container">
 			<div className="thumbnail-overlay-item thumbnail-overlay-connections" title="Connections">
 				<ChainIcon style={{ filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)', height: 16, width: 16 }} />
 				&nbsp;
