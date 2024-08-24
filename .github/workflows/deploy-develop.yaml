@@ -46,18 +46,16 @@ jobs:
         Push-Location ./client
         ./Invoke-RunUnitTests.ps1
         Pop-Location
-    #- name: Install cypress
-    #  uses: cypress-io/github-action@v6
-    #  with:
-    #    runTests: false
     - name: Run client e2e tests
-      uses: cypress-io/github-action@v6
-      with:
-        project: ./client
+      shell: pwsh
+      run: |
+        Push-Location ./client
+        ./Invoke-RunE2eTests.ps1
+        Pop-Location
     - name: Build deployable client files
       shell: pwsh
       run: |
-        Push-Location ./server
+        Push-Location ./client
         ./Invoke-BuildClient.ps1
         Pop-Location
     - name: Install server packages

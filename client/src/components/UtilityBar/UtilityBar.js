@@ -9,9 +9,9 @@ import { ACTIONS } from '../GlobalState/reducers/global';
 
 import { selectMultiselect } from '../GlobalState/selectors/selectUploads';
 
-import getConnectHandler from './getConnectHandler';
+// import getConnectHandler from './getConnectHandler';
 import getDeleteHandler from './getDeleteHandler';
-import getUpdateLevelHandler from './getUpdateLevelHandler';
+// import getUpdateLevelHandler from './getUpdateLevelHandler';
 
 import { FEATURE_FLAGS, getFeatureFlag } from '../../utilities';
 

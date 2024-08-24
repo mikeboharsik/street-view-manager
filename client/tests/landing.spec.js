@@ -113,8 +113,6 @@ async function givenThumbnailUrlReturnsMockedThumbnail(page) {
 test.describe('without auth cookie', async () => {
 	test.afterEach(async ({ page }) => {
 		await page.unrouteAll({ behavior: 'ignoreErrors' });
-
-		await page.reload();
 	});
 
 	test.beforeEach(async ({ page }) => {
@@ -138,8 +136,6 @@ test.describe('with auth cookie', async () => {
 	test.describe('user has no photos', async () => {
 		test.afterEach(async ({ page }) => {
 			await page.unrouteAll({ behavior: 'ignoreErrors' });
-
-			await page.reload();
 		});
 
 		test.beforeEach(async ({ context, page }) => {
@@ -166,8 +162,6 @@ test.describe('with auth cookie', async () => {
 	test.describe('user has less than one page of photos', async () => {
 		test.afterEach(async ({ page }) => {
 			await page.unrouteAll({ behavior: 'ignoreErrors' });
-
-			await page.reload();
 		});
 
 		test.beforeEach(async ({ context, page }) => {
