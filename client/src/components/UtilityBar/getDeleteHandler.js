@@ -35,6 +35,11 @@ export default function getDeleteHandler(dispatch, state) {
 			return;
 		}
 
+		const shouldContinue = window.confirm(`Are you absolutely sure you want to delete the ${ids.length} selected photo(s)?`)
+		if (!shouldContinue) {
+			return;
+		}
+
 		const body = { photoIds: ids };
 
 		try {
