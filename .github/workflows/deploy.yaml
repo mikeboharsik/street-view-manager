@@ -7,7 +7,7 @@ on:
     paths:
       - '.github/workflows/**'
       - 'client/src/**'
-      - 'server/src/**'
+      - 'server/**'
   workflow_dispatch:
     inputs:
 
