@@ -69,7 +69,7 @@ export default function PhotoEditor({ match }) {
 	
 				<div id="photoeditor-metadata-container">
 					<span>
-						Views: <a target="_blank" rel="noreferrer" href={shareLink}>{viewCount}</a>
+						Views: <a target="_blank" rel="noreferrer" href={shareLink}>{viewCount || 'N/A'}</a>
 					</span>
 					<br />
 
