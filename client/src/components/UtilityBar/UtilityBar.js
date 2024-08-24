@@ -33,9 +33,11 @@ function Functions() {
 		<div style={{ textAlign: 'center' }}>
 			<div className="utilityBar-separator" />
 
+			{/*
 			<div className={functionClassName} onClick={getConnectHandler(state)} title="Set connections">Con</div>
 			<div className={functionClassName} onClick={() => dispatch({ payload: { form: <PhotoPlaces /> }, type: ACTIONS.SET_MODAL })} title="Set places">Places</div>
 			<div className={functionClassName} onClick={getUpdateLevelHandler(state)} title="Set level">Level</div>
+			*/}
 			<div className={functionClassName} onClick={getDeleteHandler(dispatch, state)} title="Delete photos">Delete</div>
 
 			{getFeatureFlag(FEATURE_FLAGS.MODAL_TEST) && <div className={functionClassName} onClick={() => dispatch({ payload: { form: <PhotoPlaces /> }, type: ACTIONS.SET_MODAL })} title="Test modal">Modal</div>}
