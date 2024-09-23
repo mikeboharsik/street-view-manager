@@ -56,7 +56,7 @@ jobs:
       shell: pwsh
       run: |
         Push-Location ./client
-        ./Invoke-BuildClient.ps1
+        ./Invoke-BuildClient.ps1 -AppClientId '${{ vars.DEV_APP_CLIENT_ID }}' -AppKey '${{ vars.DEV_APP_KEY }}'
         Pop-Location
     - name: Install server packages
       shell: pwsh
@@ -70,8 +70,6 @@ jobs:
         Push-Location ./server
 
         ./Invoke-UploadStreetViewManager.ps1 `
-          -AppClientId '${{ vars.DEV_APP_CLIENT_ID }}' `
-          -AppKey '${{ vars.DEV_APP_KEY }}' `
           -LambdaFunctionName '${{ vars.DEV_LAMBDA_FUNCTION_NAME }}' `
           -CloudFrontDistributionID '${{ vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}'
 

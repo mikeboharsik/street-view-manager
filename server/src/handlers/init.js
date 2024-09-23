@@ -4,7 +4,7 @@ const initPostHandler = {
     action: async (event) => {
         let { body } = event;
         
-        console.log(`init payload: ${JSON.stringify(body)}`);
+        console.log(`init payload: ${body}`);
         
         return {
             statusCode: 200,

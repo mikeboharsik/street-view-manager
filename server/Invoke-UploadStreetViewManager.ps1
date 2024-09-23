@@ -3,12 +3,6 @@ Param(
 	[string] $ClientPath = (Resolve-Path "$PSScriptRoot/../client"),
 
 	[Parameter(Mandatory=$true)]
-	[string] $AppClientId,
-
-	[Parameter(Mandatory=$true)]
-	[string] $AppKey,
-
-	[Parameter(Mandatory=$true)]
 	[string] $LambdaFunctionName,
 
 	[Parameter(Mandatory=$true)]
@@ -32,26 +26,12 @@ Write-Host "`$CloudFrontInvalidationPaths = [$CloudFrontInvalidationPaths]"
 $stagingPath = "$PSScriptRoot\build\staging"
 Write-Host "`$stagingPath = [$stagingPath]"
 
-if (!$AppClientId) {
-	throw "Missing clientId: [$AppClientId]"
-}
-
-if (!$AppKey) {
-	throw "Missing appKey: [$AppKey]"
-}
-
 if (!$LambdaFunctionName) {
 	throw "Missing lambda function name: [$LambdaFunctionName]"
 }
 
 $uploadPackagePath = Join-Path $stagingPath "../$LambdaFunctionName.zip"
 Write-Host "`$uploadPackagePath = [$uploadPackagePath]"
-
-$env:REACT_APP_CLIENT_ID = $AppClientId
-Write-Host "`$env:REACT_APP_CLIENT_ID = [$env:REACT_APP_CLIENT_ID]"
-
-$env:REACT_APP_KEY = $AppKey
-Write-Host "`$env:REACT_APP_KEY = [$env:REACT_APP_KEY]"
 
 $clientGitHash = $ENV:GITHUB_SHA
 Write-Host "`$clientGitHash=[$clientGitHash]"
