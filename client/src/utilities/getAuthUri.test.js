@@ -9,6 +9,6 @@ describe('getAuthUri', () => {
 
 		const authUri = getAuthUri();
 
-		expect(authUri).toEqual(`https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/streetviewpublish&access_type=online&include_granted_scopes=true&response_type=token&redirect_uri=http://mockhost.com/oauth&client_id=MOCK_CLIENT_ID`);
+		expect(authUri).toEqual(`https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/streetviewpublish https://www.googleapis.com/auth/userinfo.email&access_type=online&include_granted_scopes=true&response_type=token&redirect_uri=http://mockhost.com/oauth&client_id=MOCK_CLIENT_ID`);
 	});
 });

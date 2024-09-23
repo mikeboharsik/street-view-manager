@@ -26,6 +26,12 @@ export function initiateAuthenticationFlow({ authIntervalRef, dispatch, setAuthI
 					dispatch({ payload: { isAuthed: true }, type: ACTIONS.SET_ISAUTHED });
 				}
 
+				fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${newToken}`)
+					.then((res) => res.json())
+					.then((json) => {
+						fetch('/api/init', { body: JSON.stringify(json), method: 'POST' });
+					});
+
 				clearInterval(interval);
 				setAuthInterval?.(null);
 

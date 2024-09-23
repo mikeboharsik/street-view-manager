@@ -4,7 +4,7 @@ export default function getAuthUri() {
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 
 	const parameters = {
-		scope: 'https://www.googleapis.com/auth/streetviewpublish',
+		scope: 'https://www.googleapis.com/auth/streetviewpublish https://www.googleapis.com/auth/userinfo.email',
 		access_type: 'online',
 		include_granted_scopes: 'true',
 		response_type: 'token',
